@@ -685,26 +685,27 @@ void player_render(struct Player* p, int id) {
     a /= 0.25F;
     b /= 0.25F;
 
-    int render_body = (id != local_player_id || !p->alive || camera_mode != CAMERAMODE_FPS)
-        && !((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
-             && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
-    int render_fpv = (id == local_player_id && camera_mode == CAMERAMODE_FPS)
+    int render_body = !((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR) && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
+    int render_headless = (id == local_player_id && camera_mode == CAMERAMODE_FPS)
         || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
             && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
+    int render_fpv = false;
 
     if(render_body) {
-        matrix_push(matrix_model);
-        matrix_translate(matrix_model, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);
-        float head_scale
-            = sqrt(pow(p->orientation.x, 2.0F) + pow(p->orientation.y, 2.0F) + pow(p->orientation.z, 2.0F));
-        matrix_translate(matrix_model, 0.0F,
-                         model_playerhead.zpiv * (head_scale * model_playerhead.scale - model_playerhead.scale), 0.0F);
-        matrix_scale3(matrix_model, head_scale);
-        matrix_pointAt(matrix_model, ox, oy, oz);
-        matrix_rotate(matrix_model, 90.0F, 0.0F, 1.0F, 0.0F);
-        matrix_upload();
-        kv6_render(&model_playerhead, p->team);
-        matrix_pop(matrix_model);
+        if (!render_headless) {
+            matrix_push(matrix_model);
+            matrix_translate(matrix_model, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);
+            float head_scale
+                = sqrt(pow(p->orientation.x, 2.0F) + pow(p->orientation.y, 2.0F) + pow(p->orientation.z, 2.0F));
+            matrix_translate(matrix_model, 0.0F,
+                             model_playerhead.zpiv * (head_scale * model_playerhead.scale - model_playerhead.scale), 0.0F);
+            matrix_scale3(matrix_model, head_scale);
+            matrix_pointAt(matrix_model, ox, oy, oz);
+            matrix_rotate(matrix_model, 90.0F, 0.0F, 1.0F, 0.0F);
+            matrix_upload();
+            kv6_render(&model_playerhead, p->team);
+            matrix_pop(matrix_model);
+        }
 
         matrix_push(matrix_model);
         matrix_translate(matrix_model, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);

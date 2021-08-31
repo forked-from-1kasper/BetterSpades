@@ -338,28 +338,28 @@ void display() {
                 if(players[local_player_id].input.buttons.lmb)
                     players[local_player_id].input.buttons.lmb_start = window_time();
                 players[local_player_id].input.buttons.rmb = 0;
-            } else {
-                if(hud_active->render_localplayer) {
-                    float tmp2 = players[local_player_id].physics.eye.y;
-                    players[local_player_id].physics.eye.y = last_cy;
-                    if(camera_mode == CAMERAMODE_FPS)
-                        glDepthRange(0.0F, 0.05F);
-                    matrix_push(matrix_projection);
-                    matrix_translate(matrix_projection, 0.0F, -0.25F, 0.0F);
-                    matrix_upload_p();
+            }
+
+            if(hud_active->render_localplayer) {
+                float tmp2 = players[local_player_id].physics.eye.y;
+                players[local_player_id].physics.eye.y = last_cy;
+                if(camera_mode == CAMERAMODE_FPS)
+                    glDepthRange(0.0F, 0.05F);
+                matrix_push(matrix_projection);
+                matrix_translate(matrix_projection, 0.0F, -0.25F, 0.0F);
+                matrix_upload_p();
 #ifdef OPENGL_ES
-                    if(camera_mode == CAMERAMODE_FPS)
-                        glx_disable_sphericalfog();
+                if(camera_mode == CAMERAMODE_FPS)
+                    glx_disable_sphericalfog();
 #endif
-                    player_render(&players[local_player_id], local_player_id);
+                player_render(&players[local_player_id], local_player_id);
 #ifdef OPENGL_ES
-                    if(camera_mode == CAMERAMODE_FPS)
-                        glx_enable_sphericalfog();
+                if(camera_mode == CAMERAMODE_FPS)
+                    glx_enable_sphericalfog();
 #endif
-                    matrix_pop(matrix_projection);
-                    glDepthRange(0.0F, 1.0F);
-                    players[local_player_id].physics.eye.y = tmp2;
-                }
+                matrix_pop(matrix_projection);
+                glDepthRange(0.0F, 1.0F);
+                players[local_player_id].physics.eye.y = tmp2;
             }
 
             matrix_upload_p();
