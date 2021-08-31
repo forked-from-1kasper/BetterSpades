@@ -34,13 +34,11 @@ MODULES += minheap rpc tesselator channel entitysystem
 objs = $(addprefix $(1)/,$(addsuffix .o,$(2)))
 OBJS = $(call objs,$(BUILDDIR),$(MODULES) $(DEPS))
 
-all: $(BUILDDIR) $(BUILDDIR)/$(BINARY) $(RESPACK)
-	cp $(BUILDDIR)/$(BINARY) $(GAMEDIR)
-	cp -r $(RESDIR)/* $(GAMEDIR)
-	unzip $(RESPACK) -d $(GAMEDIR)
+all: $(BUILDDIR) $(GAMEDIR) $(RESPACK)
 
-$(RESPACK): $(GAMEDIR)
+$(RESPACK):
 	wget $(PACKURL) -O $(RESPACK)
+	unzip $(RESPACK) -d $(GAMEDIR)
 
 $(BUILDDIR)/$(BINARY): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $(BUILDDIR)/$(BINARY)
@@ -51,8 +49,10 @@ $(call objs,$(BUILDDIR),$(MODULES)): $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/
 $(call objs,$(BUILDDIR),$(DEPS)): $(BUILDDIR)/%.o: $(DEPSDIR)/%.cpp $(DEPSDIR)/%.hpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) $< -o $@
 
-$(GAMEDIR):
+$(GAMEDIR): $(BUILDDIR)/$(BINARY)
 	mkdir -p $(GAMEDIR)
+	cp $(BUILDDIR)/$(BINARY) $(GAMEDIR)
+	cp -r $(RESDIR)/* $(GAMEDIR)
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
