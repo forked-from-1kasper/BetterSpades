@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,15 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef COMMON_H
-#define COMMON_H
-
-#define BETTERSPADES_MAJOR 0
-#define BETTERSPADES_MINOR 0
-#define BETTERSPADES_PATCH 0
-#define BETTERSPADES_VERSION "v0.0.0"
-#define GIT_COMMIT_HASH "(hash)"
 
 #ifndef OPENGL_ES
 #define GLEW_STATIC
@@ -127,5 +120,3 @@ int ms_rand(void);
         log_fatal("Critical error: memory allocation failed (%s:%d)", __func__, __LINE__);                             \
         exit(1);                                                                                                       \
     }
-
-#endif

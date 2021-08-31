@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef MODEL_H
-#define MODEL_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -84,5 +83,3 @@ void kv6_load(struct kv6_t* kv6, void* bytes, float scale);
 void kv6_init(void);
 
 extern float kv6_normals[256][3];
-
-#endif

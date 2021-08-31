@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,8 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPC_H
-#define RPC_H
 
 enum RPC_VALUE {
     RPC_VALUE_SERVERNAME,
@@ -32,5 +32,3 @@ void rpc_deinit(void);
 void rpc_setv(enum RPC_VALUE v, char* x);
 void rpc_seti(enum RPC_VALUE v, int x);
 void rpc_update(void);
-
-#endif

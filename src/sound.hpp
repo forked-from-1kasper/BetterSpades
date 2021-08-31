@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef SOUND_H
-#define SOUND_H
 
 #ifdef USE_SOUND
 #if __APPLE__
@@ -104,5 +103,3 @@ void sound_create(enum sound_space option, struct Sound_wav* w, float x, float y
 void sound_update(void);
 void sound_load(struct Sound_wav* wav, char* name, float min, float max);
 void sound_init(void);
-
-#endif

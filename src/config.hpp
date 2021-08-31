@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,11 +19,7 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
-
 #include <stddef.h>
-
 #include <list.hpp>
 
 struct config_file_entry {
@@ -96,5 +94,3 @@ struct config_key_pair* config_key(int key);
 void config_key_reset_togglestates();
 void config_reload(void);
 void config_save(void);
-
-#endif

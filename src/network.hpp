@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef NETWORK_H
-#define NETWORK_H
 
 const char* network_reason_disconnect(int code);
 
@@ -445,4 +444,3 @@ enum Extension {
 
 #pragma pack(pop)
 
-#endif

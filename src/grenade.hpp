@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GRENADE_H
-#define GRENADE_H
-
 struct Grenade {
     float fuse_length;
     float created;
@@ -31,5 +30,3 @@ void grenade_init(void);
 void grenade_add(struct Grenade* g);
 void grenade_update(float dt);
 void grenade_render(void);
-
-#endif

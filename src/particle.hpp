@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PARTICLE_H
-#define PARTICLE_H
-
 #include <player.hpp>
 
 struct Particle {
@@ -38,5 +37,3 @@ void particle_render(void);
 void particle_create_casing(struct Player* p);
 void particle_create(unsigned int color, float x, float y, float z, float velocity, float velocity_y, int amount,
                      float min_size, float max_size);
-
-#endif

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef CAMERA_H
-#define CAMERA_H
 
 enum camera_mode {
     CAMERAMODE_SELECTION,
@@ -69,5 +68,3 @@ int* camera_terrain_pickEx(unsigned char mode, float x, float y, float z, float 
 void camera_overflow_adjust(void);
 void camera_apply(void);
 void camera_update(float dt);
-
-#endif

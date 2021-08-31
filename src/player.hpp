@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef PLAYER_H
-#define PLAYER_H
 
 #include <stdbool.h>
 
@@ -181,5 +180,3 @@ void player_collision(const struct Player* p, Ray* ray, struct player_intersecti
 void player_reset(struct Player* p);
 int player_move(struct Player* p, float fsynctics, int id);
 int player_uncrouch(struct Player* p);
-
-#endif

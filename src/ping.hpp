@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PING_H
-#define PING_H
-
 #include <enet/enet.h>
 
 struct ping_entry {
@@ -35,5 +34,3 @@ void ping_check(char* addr, int port, char* aos);
 void* ping_update(void* data);
 void ping_start(void (*result)(void*, float, char*));
 void ping_stop();
-
-#endif

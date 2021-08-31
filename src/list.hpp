@@ -1,5 +1,4 @@
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
 struct list {
     void* data;
@@ -21,5 +20,3 @@ void* list_add(struct list* l, void* e);
 void list_remove(struct list* l, size_t i);
 void list_clear(struct list* l);
 int list_size(struct list* l);
-
-#endif

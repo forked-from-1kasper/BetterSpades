@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef MINHEAP_H
-#define MINHEAP_H
 
 #define pos_key(x, y, z) (((z) << 20) | ((x) << 8) | (y))
 #define pos_keyx(key) (((key) >> 8) & 0xFFF)
@@ -49,5 +48,3 @@ int minheap_isempty(struct minheap* h);
 struct minheap_block minheap_extract(struct minheap* h);
 void minheap_set(struct minheap* h, struct minheap_block* b, int value);
 struct minheap_block* minheap_put(struct minheap* h, struct minheap_block* b);
-
-#endif

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FONT_H
-#define FONT_H
-
 enum font_type {
     FONT_FIXEDSYS,
     FONT_SMALLFNT,
@@ -31,5 +30,3 @@ float font_length(float h, char* text);
 void font_render(float x, float y, float h, char* text);
 void font_centered(float x, float y, float h, char* text);
 void font_select(enum font_type type);
-
-#endif

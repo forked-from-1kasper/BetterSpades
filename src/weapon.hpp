@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef WEAPON_H
-#define WEAPON_H
 
 #include <player.hpp>
 #include <sound.hpp>
@@ -44,5 +43,3 @@ void weapon_recoil(int gun, double* horiz_recoil, double* vert_recoil);
 
 extern float weapon_reload_start, weapon_last_shot;
 extern unsigned char weapon_reload_inprogress;
-
-#endif

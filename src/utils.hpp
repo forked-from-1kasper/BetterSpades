@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UTILS_H
-#define UTILS_H
-
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -31,5 +30,3 @@ int int_cmp(void* first_key, void* second_key, size_t key_size);
 size_t int_hash(void* raw_key, size_t key_size);
 void ht_iterate_remove(HashTable* ht, void* user, bool (*callback)(void* key, void* value, void* user));
 bool ht_iterate(HashTable* ht, void* user, bool (*callback)(void* key, void* value, void* user));
-
-#endif

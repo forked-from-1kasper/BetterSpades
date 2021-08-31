@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef AABB_H
-#define AABB_H
 
 #include <stdbool.h>
 
@@ -58,5 +57,3 @@ bool aabb_intersection_terrain(AABB* a, int miny);
 void aabb_set_size(AABB* a, float x, float y, float z);
 void aabb_set_center(AABB* a, float x, float y, float z);
 void aabb_render(AABB* a);
-
-#endif

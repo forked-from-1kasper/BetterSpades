@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef MAP_H
-#define MAP_H
 
 #include <stdint.h>
 
@@ -57,5 +56,3 @@ void map_collapsing_update(float dt);
 int map_height_at(int x, int z);
 void map_save_file(const char* filename);
 void map_copy_blocks(struct libvxl_chunk_copy* copy, size_t x, size_t y);
-
-#endif

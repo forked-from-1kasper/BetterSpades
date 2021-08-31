@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef HUD_H
-#define HUD_H
 
 #include <stdbool.h>
 
@@ -67,5 +66,3 @@ extern struct window_instance* hud_window;
 void hud_change(hud*);
 void hud_init();
 void hud_mousemode(int mode);
-
-#endif

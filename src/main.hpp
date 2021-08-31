@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MAIN_H
-#define MAIN_H
-
 #include <window.hpp>
 
 void reshape(struct window_instance* window, int width, int height);
@@ -29,5 +28,3 @@ void mouse_click(struct window_instance* window, int button, int action, int mod
 void mouse(struct window_instance* window, double x, double y);
 void mouse_scroll(struct window_instance* window, double xoffset, double yoffset);
 void on_error(int i, const char* s);
-
-#endif

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TRACER_H
-#define TRACER_H
-
 #include <aabb.hpp>
 #include <player.hpp>
 #include <camera.hpp>
@@ -38,5 +37,3 @@ void tracer_add(int type, float x, float y, float z, float dx, float dy, float d
 void tracer_update(float dt);
 void tracer_render(void);
 void tracer_init(void);
-
-#endif

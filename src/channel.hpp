@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHANNEL_H
-#define CHANNEL_H
-
 #include <pthread.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,15 +36,8 @@ struct channel {
 };
 
 bool channel_create(struct channel* ch, size_t object_size, size_t length);
-
 size_t channel_size(struct channel* ch);
-
 void channel_destroy(struct channel* ch);
-
 void channel_put(struct channel* ch, void* object);
-
 void channel_await(struct channel* ch, void* object);
-
 void channel_clear(struct channel* ch);
-
-#endif

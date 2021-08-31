@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef MATRIX_H
-#define MATRIX_H
 
 #include <cglm/call.h>
 
@@ -43,5 +42,3 @@ void matrix_lookAt(mat4 m, double eyex, double eyey, double eyez, double centerx
 void matrix_upload(void);
 void matrix_upload_p(void);
 void matrix_pointAt(mat4 m, float dx, float dy, float dz);
-
-#endif

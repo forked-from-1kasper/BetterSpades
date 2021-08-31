@@ -1,5 +1,4 @@
-#ifndef LIBVXL_H
-#define LIBVXL_H
+#pragma once
 
 #include <stdint.h>
 #include <stddef.h>
@@ -228,5 +227,3 @@ size_t libvxl_stream_read(struct libvxl_stream* stream, void* out);
 //! @param y y-coordinate of block
 //! @param z z-coordinate of block
 bool libvxl_map_isinside(struct libvxl_map* map, int x, int y, int z);
-
-#endif

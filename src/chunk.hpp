@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef CHUNK_H
-#define CHUNK_H
 
 #include <stdint.h>
 #include <pthread.h>
@@ -53,5 +52,3 @@ void chunk_generate_naive(struct libvxl_chunk_copy* blocks, struct tesselator* t
 void chunk_rebuild_all(void);
 void chunk_draw_visible(void);
 void chunk_queue_blocks();
-
-#endif

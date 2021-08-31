@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -16,9 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef TESSELATOR_H
-#define TESSELATOR_H
 
 #include <stdint.h>
 
@@ -72,5 +71,3 @@ void tesselator_addi_cube_face_adv(struct tesselator* t, enum tesselator_cube_fa
                                    int16_t z, int16_t sx, int16_t sy, int16_t sz);
 void tesselator_addf_cube_face(struct tesselator* t, enum tesselator_cube_face face, float x, float y, float z,
                                float sz);
-
-#endif

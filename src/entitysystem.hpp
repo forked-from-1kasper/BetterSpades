@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ENTITY_SYSTEM_H
-#define ENTITY_SYSTEM_H
-
 #include <stddef.h>
 #include <stdbool.h>
 #include <pthread.h>
@@ -33,9 +32,5 @@ struct entity_system {
 };
 
 void entitysys_create(struct entity_system* es, size_t object_size, size_t initial_size);
-
 void entitysys_add(struct entity_system* es, void* object);
-
 void entitysys_iterate(struct entity_system* es, void* user, bool (*callback)(void* object, void* user));
-
-#endif

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -17,9 +19,6 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CAMERACONTROLLER_H
-#define CAMERACONTROLLER_H
-
 extern int cameracontroller_bodyview_mode;
 extern int cameracontroller_bodyview_player;
 extern float cameracontroller_bodyview_zoom;
@@ -37,5 +36,3 @@ void cameracontroller_spectator_render(void);
 void cameracontroller_bodyview_render(void);
 void cameracontroller_selection_render(void);
 void cameracontroller_death_render(void);
-
-#endif

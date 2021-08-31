@@ -1,3 +1,5 @@
+#pragma once
+
 /*
     Copyright (c) 2017-2020 ByteBit
 
@@ -18,9 +20,6 @@
 */
 
 // for future opengl es abstraction layer
-
-#ifndef GLX_H
-#define GLX_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -54,5 +53,3 @@ void glx_displaylist_create(struct glx_displaylist* x, bool has_color, bool has_
 void glx_displaylist_destroy(struct glx_displaylist* x);
 void glx_displaylist_update(struct glx_displaylist* x, size_t size, int type, void* color, void* vertex, void* normal);
 void glx_displaylist_draw(struct glx_displaylist* x, int type);
-
-#endif
