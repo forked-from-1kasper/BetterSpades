@@ -1,10 +1,4 @@
-[![Build Status](https://aos.party/jenkins/buildStatus/icon?job=BetterSpades)](https://aos.party/jenkins/job/BetterSpades/)
-[![](https://img.shields.io/github/downloads/xtreme8000/BetterSpades/total.svg)](https://github.com/xtreme8000/BetterSpades/releases)
-[![Discord](https://img.shields.io/badge/discord-join-ff00ff.svg)](https://discord.gg/9JGXKBt)
 [![GPL](https://img.shields.io/badge/license-GPL--3.0-red.svg)](https://github.com/xtreme8000/BetterSpades/blob/standalone/LICENSE)
-[![DonateBTC](https://img.shields.io/badge/bitcoin-donate-yellow.svg)](https://github.com/xtreme8000/BetterSpades#donate)
-
-[![Google Play](/docs/android.png)](https://play.google.com/store/apps/details?id=party.aos.betterspades)
 ![GPL v3](https://www.gnu.org/graphics/gplv3-127x51.png)
 
 ## ![](docs/icon_small.png) BetterSpades
