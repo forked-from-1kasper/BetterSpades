@@ -35,69 +35,69 @@
 #define key_getz(key)			((key)&0xFF)
 
 struct __attribute((packed)) libvxl_span {
-	uint8_t length;
-	uint8_t color_start;
-	uint8_t color_end;
-	uint8_t air_start;
+    uint8_t length;
+    uint8_t color_start;
+    uint8_t color_end;
+    uint8_t air_start;
 };
 
 struct libvxl_block {
-	uint32_t position;
-	uint32_t color;
+    uint32_t position;
+    uint32_t color;
 };
 
 struct libvxl_chunk {
-	struct libvxl_block* blocks;
-	size_t length, index;
+    struct libvxl_block* blocks;
+    size_t length, index;
 };
 
 struct libvxl_map {
-	size_t width, height, depth;
-	struct libvxl_chunk* chunks;
-	size_t* geometry;
-	size_t streamed;
+    size_t width, height, depth;
+    struct libvxl_chunk* chunks;
+    size_t* geometry;
+    size_t streamed;
 };
 
 struct libvxl_stream {
-	struct libvxl_map* map;
-	size_t* chunk_offsets;
-	size_t chunk_size;
-	void* buffer;
-	size_t buffer_offset;
-	size_t pos;
+    struct libvxl_map* map;
+    size_t* chunk_offsets;
+    size_t chunk_size;
+    void* buffer;
+    size_t buffer_offset;
+    size_t pos;
 };
 
 struct __attribute((packed)) libvxl_kv6 {
-	char magic[4];
-	int width, height, depth;
-	float pivot[3];
-	int len;
+    char magic[4];
+    int width, height, depth;
+    float pivot[3];
+    int len;
 };
 
 struct __attribute((packed)) libvxl_kv6_block {
-	int color;
-	short z;
-	unsigned char visfaces;
-	unsigned char normal;
+    int color;
+    short z;
+    unsigned char visfaces;
+    unsigned char normal;
 };
 
 struct libvxl_chunk_copy {
-	size_t width, depth;
-	size_t* geometry;
-	struct libvxl_block* blocks_sorted;
-	size_t blocks_sorted_count;
+    size_t width, depth;
+    size_t* geometry;
+    struct libvxl_block* blocks_sorted;
+    size_t blocks_sorted_count;
 };
 
 void libvxl_copy_chunk_destroy(struct libvxl_chunk_copy* copy);
 
 uint32_t libvxl_copy_chunk_get_color(struct libvxl_chunk_copy* copy, size_t x,
-									 size_t y, size_t z);
+                                     size_t y, size_t z);
 
 bool libvxl_copy_chunk_is_solid(struct libvxl_chunk_copy* copy, size_t x,
-								size_t y, size_t z);
+                                size_t y, size_t z);
 
 void libvxl_copy_chunk(struct libvxl_map* map, struct libvxl_chunk_copy* copy,
-					   size_t x, size_t y);
+                       size_t x, size_t y);
 
 //! @brief Load a map from memory or create an empty one
 //!
