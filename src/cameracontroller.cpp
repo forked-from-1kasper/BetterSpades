@@ -187,8 +187,22 @@ void cameracontroller_fps(float dt) {
 }
 
 void cameracontroller_fps_render() {
-    matrix_lookAt(matrix_view, camera_x, camera_y, camera_z, camera_x + sin(camera_rot_x) * sin(camera_rot_y),
-                  camera_y + cos(camera_rot_y), camera_z + cos(camera_rot_x) * sin(camera_rot_y), 0.0F, 1.0F, 0.0F);
+    auto lx = players[local_player_id].orientation_smooth.x;
+    auto lz = players[local_player_id].orientation_smooth.z;
+
+    auto angle = atan2(lz, lx);
+
+    auto shift_x = 0.1;
+    auto shift_y = -0.25;
+    auto shift_z = 0.0; //0.125;
+
+    auto x = camera_x + shift_x * cos(angle) - shift_z * sin(angle);
+    auto y = camera_y + shift_y;
+    auto z = camera_z + shift_x * sin(angle) + shift_z * cos(angle);
+
+    matrix_lookAt(matrix_view, x, y, z, x + sin(camera_rot_x) * sin(camera_rot_y),
+                  y + cos(camera_rot_y), z + cos(camera_rot_x) * sin(camera_rot_y),
+                  0.0F, 1.0F, 0.0F);
 }
 
 void cameracontroller_spectator(float dt) {

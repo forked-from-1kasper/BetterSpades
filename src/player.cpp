@@ -673,8 +673,7 @@ void player_render(struct Player* p, int id) {
     struct kv6_t* torso = p->input.keys.crouch ? &model_playertorsoc : &model_playertorso;
     struct kv6_t* leg = p->input.keys.crouch ? &model_playerlegc : &model_playerleg;
     float height = player_height(p);
-    if(id != local_player_id)
-        height -= 0.25F;
+    height -= 0.25F;
 
     float len = sqrt(pow(p->orientation.x, 2.0F) + pow(p->orientation.z, 2.0F));
     float fx = p->orientation.x / len;
@@ -689,7 +688,6 @@ void player_render(struct Player* p, int id) {
     int render_headless = (id == local_player_id && camera_mode == CAMERAMODE_FPS)
         || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
             && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
-    int render_fpv = false;
 
     if(render_body) {
         if (!render_headless) {
@@ -771,44 +769,23 @@ void player_render(struct Player* p, int id) {
 
     matrix_push(matrix_model);
     matrix_translate(matrix_model, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);
-    if(!render_fpv)
-        matrix_translate(matrix_model, 0.0F, p->input.keys.crouch * 0.1F - 0.1F * 2, 0.0F);
+    matrix_translate(matrix_model, 0.0F, p->input.keys.crouch * 0.1F - 0.1F * 2, 0.0F);
     matrix_pointAt(matrix_model, ox, oy, oz);
     matrix_rotate(matrix_model, 90.0F, 0.0F, 1.0F, 0.0F);
-    if(render_fpv)
-        matrix_translate(matrix_model, 0.0F, -2 * 0.1F, -2 * 0.1F);
 
-    if(render_fpv && p->alive) {
-        float speed = sqrt(pow(p->physics.velocity.x, 2) + pow(p->physics.velocity.z, 2)) / 0.25F;
-        float* f = player_tool_translate_func(p);
-        matrix_translate(matrix_model, f[0], f[1], 0.1F * player_swing_func(time / 1000.0F) * speed + f[2]);
-    }
+    if (p->held_item == TOOL_GUN && !(p->input.buttons.rmb && p->alive))
+        matrix_rotate(matrix_model, 15.0F, 1.0F, 0.0F, 0.0F);
 
-    if(p->input.keys.sprint && !p->input.keys.crouch)
-        matrix_rotate(matrix_model, 45.0F, 1.0F, 0.0F, 0.0F);
+    float* angles = player_tool_func(p);
+    matrix_rotate(matrix_model, angles[0], 1.0F, 0.0F, 0.0F);
+    matrix_rotate(matrix_model, angles[1], 0.0F, 1.0F, 0.0F);
 
-    if(render_fpv && window_time() - p->item_showup < 0.5F)
-        matrix_rotate(matrix_model, 45.0F - (window_time() - p->item_showup) * 90.0F, 1.0F, 0.0F, 0.0F);
-
-    if(!(p->held_item == TOOL_SPADE && render_fpv && camera_mode == CAMERAMODE_FPS)) {
-        float* angles = player_tool_func(p);
-        matrix_rotate(matrix_model, angles[0], 1.0F, 0.0F, 0.0F);
-        matrix_rotate(matrix_model, angles[1], 0.0F, 1.0F, 0.0F);
-    }
-    if(render_body || settings.player_arms) {
+    if (render_body || settings.player_arms) {
         matrix_upload();
         kv6_render(&model_playerarms, p->team);
     }
 
     matrix_translate(matrix_model, -3.5F * 0.1F + 0.01F, 0.0F, 10 * 0.1F);
-    if(p->held_item == TOOL_SPADE && render_fpv && window_time() - p->item_showup >= 0.5F) {
-        float* angles = player_tool_func(p);
-        matrix_translate(matrix_model, 0.0F, (model_spade.zpiv - model_spade.zsiz) * 0.05F, 0.0F);
-        matrix_rotate(matrix_model, angles[0], 1.0F, 0.0F, 0.0F);
-        matrix_rotate(matrix_model, angles[1], 0.0F, 1.0F, 0.0F);
-        matrix_translate(matrix_model, 0.0F, -(model_spade.zpiv - model_spade.zsiz) * 0.05F, 0.0F);
-    }
-
     matrix_upload();
     switch(p->held_item) {
         case TOOL_SPADE: kv6_render(&model_spade, p->team); break;
@@ -818,17 +795,18 @@ void player_render(struct Player* p, int id) {
             model_block.blue = p->block.blue / 255.0F;
             kv6_render(&model_block, p->team);
             break;
-        case TOOL_GUN:
-            // matrix_translate(matrix_model, 3.0F*0.1F-0.01F+0.025F,0.25F,-0.0625F);
-            // matrix_upload();
-            if(!(render_fpv && p->input.buttons.rmb)) {
-                switch(p->weapon) {
-                    case WEAPON_RIFLE: kv6_render(&model_semi, p->team); break;
-                    case WEAPON_SMG: kv6_render(&model_smg, p->team); break;
-                    case WEAPON_SHOTGUN: kv6_render(&model_shotgun, p->team); break;
-                }
+        case TOOL_GUN: {
+            if (p->input.buttons.rmb && p->alive) {
+                matrix_translate(matrix_model, 2.0F*0.1F, 0.2F, -0.0625F);
+                matrix_upload();
+            }
+            switch (p->weapon) {
+                case WEAPON_RIFLE: kv6_render(&model_semi, p->team); break;
+                case WEAPON_SMG: kv6_render(&model_smg, p->team); break;
+                case WEAPON_SHOTGUN: kv6_render(&model_shotgun, p->team); break;
             }
             break;
+        }
         case TOOL_GRENADE: kv6_render(&model_grenade, p->team); break;
     }
 
