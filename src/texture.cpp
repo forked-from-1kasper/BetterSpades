@@ -41,10 +41,6 @@ struct texture texture_ammo_shotgun;
 
 struct texture texture_color_selection;
 
-struct texture texture_zoom_semi;
-struct texture texture_zoom_smg;
-struct texture texture_zoom_shotgun;
-
 struct texture texture_white;
 struct texture texture_target;
 struct texture texture_indicator;
@@ -335,10 +331,6 @@ void texture_init() {
     texture_create(&texture_ammo_semi, "png/semiammo.png");
     texture_create(&texture_ammo_smg, "png/smgammo.png");
     texture_create(&texture_ammo_shotgun, "png/shotgunammo.png");
-
-    texture_create(&texture_zoom_semi, "png/semi.png");
-    texture_create(&texture_zoom_smg, "png/smg.png");
-    texture_create(&texture_zoom_shotgun, "png/shotgun.png");
 
     texture_create(&texture_white, "png/white.png");
     texture_create(&texture_target, "png/target.png");
