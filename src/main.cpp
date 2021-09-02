@@ -687,7 +687,6 @@ int main(int argc, char** argv) {
     settings.fullscreen = 0;
     settings.greedy_meshing = 0;
     settings.mouse_sensitivity = MOUSE_SENSITIVITY;
-    settings.show_news = 1;
     settings.show_fps = 0;
     settings.volume = 10;
     settings.voxlap_models = 0;

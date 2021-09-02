@@ -43,7 +43,6 @@ extern struct RENDER_OPTIONS {
     int greedy_meshing;
     int vsync;
     float mouse_sensitivity;
-    int show_news;
     int show_fps;
     int volume;
     int voxlap_models;

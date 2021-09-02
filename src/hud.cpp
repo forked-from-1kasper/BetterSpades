@@ -143,80 +143,6 @@ static void hud_ingame_render3D() {
     matrix_upload_p();
 
     if(!network_map_transfer) {
-        if(camera_mode == CAMERAMODE_FPS && players[local_player_id].items_show) {
-            players[local_player_id].input.buttons.rmb = 0;
-
-            matrix_identity(matrix_model);
-            matrix_translate(matrix_model, -2.25F, -1.5F - (players[local_player_id].held_item == TOOL_SPADE) * 0.5F,
-                             -6.0F);
-            matrix_rotate(matrix_model, window_time() * 57.4F, 0.0F, 1.0F, 0.0F);
-            matrix_translate(matrix_model, (model_spade.xpiv - model_spade.xsiz / 2) * 0.05F,
-                             (model_spade.zpiv - model_spade.zsiz / 2) * 0.05F,
-                             (model_spade.ypiv - model_spade.ysiz / 2) * 0.05F);
-            if(players[local_player_id].held_item == TOOL_SPADE) {
-                matrix_scale(matrix_model, 1.5F, 1.5F, 1.5F);
-            }
-            matrix_upload();
-            kv6_render(&model_spade, players[local_player_id].team);
-
-            if(local_player_blocks > 0) {
-                matrix_identity(matrix_model);
-                matrix_translate(matrix_model, -2.25F,
-                                 -1.5F - (players[local_player_id].held_item == TOOL_BLOCK) * 0.5F, -6.0F);
-                matrix_translate(matrix_model, 1.5F, 0.0F, 0.0F);
-                matrix_rotate(matrix_model, window_time() * 57.4F, 0.0F, 1.0F, 0.0F);
-                matrix_translate(matrix_model, (model_block.xpiv - model_block.xsiz / 2) * 0.05F,
-                                 (model_block.zpiv - model_block.zsiz / 2) * 0.05F,
-                                 (model_block.ypiv - model_block.ysiz / 2) * 0.05F);
-                if(players[local_player_id].held_item == TOOL_BLOCK) {
-                    matrix_scale(matrix_model, 1.5F, 1.5F, 1.5F);
-                }
-                model_block.red = players[local_player_id].block.red / 255.0F;
-                model_block.green = players[local_player_id].block.green / 255.0F;
-                model_block.blue = players[local_player_id].block.blue / 255.0F;
-                matrix_upload();
-                kv6_render(&model_block, players[local_player_id].team);
-            }
-
-            if(local_player_ammo + local_player_ammo_reserved > 0) {
-                struct kv6_t* gun;
-                switch(players[local_player_id].weapon) {
-                    default:
-                    case WEAPON_RIFLE: gun = &model_semi; break;
-                    case WEAPON_SMG: gun = &model_smg; break;
-                    case WEAPON_SHOTGUN: gun = &model_shotgun; break;
-                }
-                matrix_identity(matrix_model);
-                matrix_translate(matrix_model, -2.25F, -1.5F - (players[local_player_id].held_item == TOOL_GUN) * 0.5F,
-                                 -6.0F);
-                matrix_translate(matrix_model, 3.0F, 0.0F, 0.0F);
-                matrix_rotate(matrix_model, window_time() * 57.4F, 0.0F, 1.0F, 0.0F);
-                matrix_translate(matrix_model, (gun->xpiv - gun->xsiz / 2) * 0.05F, (gun->zpiv - gun->zsiz / 2) * 0.05F,
-                                 (gun->ypiv - gun->ysiz / 2) * 0.05F);
-                if(players[local_player_id].held_item == TOOL_GUN) {
-                    matrix_scale(matrix_model, 1.5F, 1.5F, 1.5F);
-                }
-                matrix_upload();
-                kv6_render(gun, players[local_player_id].team);
-            }
-
-            if(local_player_grenades > 0) {
-                matrix_identity(matrix_model);
-                matrix_translate(matrix_model, -2.25F,
-                                 -1.5F - (players[local_player_id].held_item == TOOL_GRENADE) * 0.5F, -6.0F);
-                matrix_translate(matrix_model, 4.5F, 0.0F, 0.0F);
-                matrix_rotate(matrix_model, window_time() * 57.4F, 0.0F, 1.0F, 0.0F);
-                matrix_translate(matrix_model, (model_grenade.xpiv - model_grenade.xsiz / 2) * 0.05F,
-                                 (model_grenade.zpiv - model_grenade.zsiz / 2) * 0.05F,
-                                 (model_grenade.ypiv - model_grenade.ysiz / 2) * 0.05F);
-                if(players[local_player_id].held_item == TOOL_GRENADE) {
-                    matrix_scale(matrix_model, 1.5F, 1.5F, 1.5F);
-                }
-                matrix_upload();
-                kv6_render(&model_grenade, players[local_player_id].team);
-            }
-        }
-
         if(screen_current == SCREEN_TEAM_SELECT) {
             matrix_identity(matrix_model);
             matrix_translate(matrix_model, -1.4F, -2.0F, -3.0F);
@@ -2122,36 +2048,6 @@ static void hud_serverlist_render(mu_Context* ctx, float scalex, float scaley) {
 
         mu_layout_row(ctx, 1, (int*) &empty_row, settings.window_height * 0.3F);
 
-        if(serverlist_news_exists && settings.show_news) {
-            mu_begin_panel(ctx, "News");
-            mu_layout_row(ctx, 0, NULL, 0);
-
-            struct serverlist_news_entry* current = &serverlist_news;
-            int index = 0;
-            while(current) {
-                mu_layout_begin_column(ctx);
-                float size = settings.window_height * 0.3F - ctx->text_height(ctx->style->font) * 4.125F;
-
-                int param_size[] {size * current->tile_size};
-                mu_layout_row(ctx, 1, NULL, size);
-                if(mu_button_ex(ctx, NULL, 32 + index, MU_OPT_NOFRAME)) {
-                    if(!strncmp("aos://", current->url, 6))
-                        server_c(current->url, current->caption);
-                    else
-                        file_url(current->url);
-                }
-                mu_layout_height(ctx, 0);
-                mu_text_color(ctx, red(current->color), green(current->color), blue(current->color));
-                mu_text(ctx, current->caption);
-                mu_text_color_default(ctx);
-                mu_layout_end_column(ctx);
-                index++;
-                current = current->next;
-            }
-
-            mu_end_panel(ctx);
-        }
-
         int a = ctx->text_width(ctx->style->font, "Refresh", 0) * 1.6F;
         int b = ctx->text_width(ctx->style->font, "Join", 0) * 2.0F;
 
@@ -2679,19 +2575,19 @@ static void hud_controls_render(mu_Context* ctx, float scalex, float scaley) {
 
         char* category = NULL;
         int open = 0;
-        for(int k = 0; k < list_size(&config_keys); k++) {
+        for (int k = 0; k < list_size(&config_keys); k++) {
             auto a = (config_key_pair*) list_get(&config_keys, k);
 
-            if(*a->display) {
-                if(!category || strcmp(category, a->category)) {
+            if (*a->display) {
+                if (!category || strcmp(category, a->category)) {
                     category = a->category;
 
                     open = mu_header_ex(ctx, a->category, MU_OPT_EXPANDED);
                 }
 
-                if(open) {
+                if (open) {
                     int width = mu_get_current_container(ctx)->body.w;
-                    if(a->def != a->original) {
+                    if (a->def != a->original) {
                         int row2[] {0.65F * width, ctx->text_width(ctx->style->font, "Reset", 0) * 1.5F, -0.05F * width, -1};
                         mu_layout_row(ctx, 4, (int*) &row2, 0);
                     } else {
@@ -2702,7 +2598,7 @@ static void hud_controls_render(mu_Context* ctx, float scalex, float scaley) {
                     mu_push_id(ctx, a->display, sizeof(a->display));
                     mu_text(ctx, a->display);
 
-                    if(a->def != a->original && mu_button(ctx, "Reset")) {
+                    if (a->def != a->original && mu_button(ctx, "Reset")) {
                         a->def = a->original;
                         config_save();
                     }
@@ -2710,22 +2606,22 @@ static void hud_controls_render(mu_Context* ctx, float scalex, float scaley) {
                     char name[32];
                     window_keyname(a->def, name, sizeof(name));
 
-                    if(hud_controls_edit == a)
+                    if (hud_controls_edit == a)
                         mu_text_color(ctx, 255, 0, 0);
-                    if(mu_button(ctx, name))
+                    if (mu_button(ctx, name))
                         hud_controls_edit = (hud_controls_edit == a) ? NULL : a;
                     mu_text_color_default(ctx);
                     mu_pop_id(ctx);
 
                     mu_push_id(ctx, a->name, sizeof(a->name));
-                    if(mu_begin_popup(ctx, "Help")) {
+                    if (mu_begin_popup(ctx, "Help")) {
                         int row4[] {ctx->text_width(ctx->style->font, a->name, 0)};
                         mu_layout_row(ctx, 1, (int*) &row4, 0);
                         mu_text(ctx, a->name);
                         mu_end_popup(ctx);
                     }
 
-                    if(mu_button(ctx, "?"))
+                    if (mu_button(ctx, "?"))
                         mu_open_popup(ctx, "Help");
                     mu_pop_id(ctx);
                 }

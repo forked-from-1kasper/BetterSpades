@@ -76,7 +76,6 @@ void config_save() {
     config_seti("client", "greedy_meshing", settings.greedy_meshing);
     config_seti("client", "vsync", settings.vsync);
     config_setf("client", "mouse_sensitivity", settings.mouse_sensitivity);
-    config_seti("client", "show_news", settings.show_news);
     config_seti("client", "vol", settings.volume);
     config_seti("client", "show_fps", settings.show_fps);
     config_seti("client", "voxlap_models", settings.voxlap_models);
@@ -136,8 +135,6 @@ static int config_read_key(void* user, const char* section, const char* name, co
             settings.vsync = atoi(value);
         } else if(!strcmp(name, "mouse_sensitivity")) {
             settings.mouse_sensitivity = atof(value);
-        } else if(!strcmp(name, "show_news")) {
-            settings.show_news = atoi(value);
         } else if(!strcmp(name, "vol")) {
             settings.volume = maxc(minc(atoi(value), 10), 0);
             sound_volume(settings.volume / 10.0F);
@@ -513,12 +510,6 @@ void config_reload() {
         "Invert y", "Invert vertical mouse movement",
     };
 
-    config_setting show_news {
-        &settings_tmp.show_news,
-        CONFIG_TYPE_INT, 0, 1,
-        "Show news", "Show news on server list",
-    };
-
     list_add(&config_settings, &player_name);
     list_add(&config_settings, &mouse_sensitivity);
     list_add(&config_settings, &camera_fov);
@@ -537,5 +528,4 @@ void config_reload() {
     list_add(&config_settings, &ambient_occlusion);
     list_add(&config_settings, &show_fps);
     list_add(&config_settings, &invert_y);
-    list_add(&config_settings, &show_news);
 }
