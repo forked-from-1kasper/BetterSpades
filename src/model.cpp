@@ -317,299 +317,165 @@ static void greedy_mesh(struct kv6_t* kv6, struct kv6_voxel* voxel, uint8_t* mar
 
 static int kv6_program = -1;
 void kv6_render(struct kv6_t* kv6, unsigned char team) {
-    if(!kv6)
-        return;
-    if(team == TEAM_SPECTATOR)
-        team = 2;
-    if(!settings.voxlap_models) {
-        if(!kv6->has_display_list) {
-            struct tesselator tess_color;
-            tesselator_create(&tess_color, VERTEX_INT, 1);
-            struct tesselator tess_team;
-            tesselator_create(&tess_team, VERTEX_INT, 1);
+    if(!kv6) return;
+    if(team == TEAM_SPECTATOR) team = 2;
+    if (!kv6->has_display_list) {
+        struct tesselator tess_color;
+        tesselator_create(&tess_color, VERTEX_INT, 1);
+        struct tesselator tess_team;
+        tesselator_create(&tess_team, VERTEX_INT, 1);
 
-            glx_displaylist_create(kv6->display_list + 0, true, true);
-            glx_displaylist_create(kv6->display_list + 1, true, true);
+        glx_displaylist_create(kv6->display_list + 0, true, true);
+        glx_displaylist_create(kv6->display_list + 1, true, true);
 
-            uint8_t marked[kv6->voxel_count];
-            memset(marked, 0, sizeof(uint8_t) * kv6->voxel_count);
+        uint8_t marked[kv6->voxel_count];
+        memset(marked, 0, sizeof(uint8_t) * kv6->voxel_count);
 
-            struct kv6_voxel* voxel = kv6->voxels;
-            for(size_t k = 0; k < kv6->voxel_count; k++, voxel++) {
-                int b = red(voxel->color);
-                int g = green(voxel->color);
-                int r = blue(voxel->color);
-                int a = alpha(voxel->color);
+        struct kv6_voxel* voxel = kv6->voxels;
+        for (size_t k = 0; k < kv6->voxel_count; k++, voxel++) {
+            int b = red(voxel->color);
+            int g = green(voxel->color);
+            int r = blue(voxel->color);
+            int a = alpha(voxel->color);
 
-                struct tesselator* tess = &tess_color;
+            struct tesselator* tess = &tess_color;
 
-                if((r | g | b) == 0) {
-                    tess = &tess_team;
-                    r = g = b = 255;
-                } else if(kv6->colorize) {
-                    r = g = b = 255;
-                }
-
-                tesselator_set_normal(tess, kv6_normals[a][0] * 128, -kv6_normals[a][2] * 128, kv6_normals[a][1] * 128);
-
-                if(voxel->visfaces & KV6_VIS_POS_Y) {
-                    size_t max_x, max_z;
-                    greedy_mesh(kv6, voxel, marked, &max_x, &max_z, KV6_VIS_POS_Y);
-
-                    tesselator_set_color(tess, rgba(r, g, b, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_Y_P, voxel->x, voxel->z, voxel->y, max_x, 1, max_z);
-                }
-
-                if(voxel->visfaces & KV6_VIS_NEG_Y) {
-                    size_t max_x, max_z;
-                    greedy_mesh(kv6, voxel, marked, &max_x, &max_z, KV6_VIS_NEG_Y);
-
-                    tesselator_set_color(tess, rgba(r * 0.6F, g * 0.6F, b * 0.6F, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_Y_N, voxel->x, voxel->z, voxel->y, max_x, 1, max_z);
-                }
-
-                if(voxel->visfaces & KV6_VIS_NEG_Z) {
-                    size_t max_x, max_y;
-                    greedy_mesh(kv6, voxel, marked, &max_x, &max_y, KV6_VIS_NEG_Z);
-
-                    tesselator_set_color(tess, rgba(r * 0.95F, g * 0.95F, b * 0.95F, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_Z_N, voxel->x, voxel->z - (max_y - 1), voxel->y,
-                                                  max_x, max_y, 1);
-                }
-
-                if(voxel->visfaces & KV6_VIS_POS_Z) {
-                    size_t max_x, max_y;
-                    greedy_mesh(kv6, voxel, marked, &max_x, &max_y, KV6_VIS_POS_Z);
-
-                    tesselator_set_color(tess, rgba(r * 0.9F, g * 0.9F, b * 0.9F, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_Z_P, voxel->x, voxel->z - (max_y - 1), voxel->y,
-                                                  max_x, max_y, 1);
-                }
-
-                if(voxel->visfaces & KV6_VIS_NEG_X) {
-                    size_t max_y, max_z;
-                    greedy_mesh(kv6, voxel, marked, &max_y, &max_z, KV6_VIS_NEG_X);
-
-                    tesselator_set_color(tess, rgba(r * 0.85F, g * 0.85F, b * 0.85F, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_X_N, voxel->x, voxel->z - (max_y - 1), voxel->y, 1,
-                                                  max_y, max_z);
-                }
-
-                if(voxel->visfaces & KV6_VIS_POS_X) {
-                    size_t max_y, max_z;
-                    greedy_mesh(kv6, voxel, marked, &max_y, &max_z, KV6_VIS_POS_X);
-
-                    tesselator_set_color(tess, rgba(r * 0.8F, g * 0.8F, b * 0.8F, 0));
-                    tesselator_addi_cube_face_adv(tess, CUBE_FACE_X_P, voxel->x, voxel->z - (max_y - 1), voxel->y, 1,
-                                                  max_y, max_z);
-                }
+            if ((r | g | b) == 0) {
+                tess = &tess_team;
+                r = g = b = 255;
+            } else if(kv6->colorize) {
+                r = g = b = 255;
             }
 
-            tesselator_glx(&tess_color, kv6->display_list + 0);
-            tesselator_glx(&tess_team, kv6->display_list + 1);
+            tesselator_set_normal(tess, kv6_normals[a][0] * 128, -kv6_normals[a][2] * 128, kv6_normals[a][1] * 128);
 
-            tesselator_free(&tess_color);
-            tesselator_free(&tess_team);
+            if (voxel->visfaces & KV6_VIS_POS_Y) {
+                size_t max_x, max_z;
+                greedy_mesh(kv6, voxel, marked, &max_x, &max_z, KV6_VIS_POS_Y);
 
-            kv6->has_display_list = true;
-        } else {
-            glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
-            glEnable(GL_COLOR_MATERIAL);
-            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-            glEnable(GL_NORMALIZE);
-
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_CONSTANT);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_CONSTANT);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PREVIOUS);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_PREVIOUS);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
-            glBindTexture(GL_TEXTURE_2D, texture_dummy.texture_id);
-
-            if(kv6->colorize) {
-                glEnable(GL_TEXTURE_2D);
-                float color[] {kv6->red, kv6->green, kv6->blue, 1.0F};
-                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
+                tesselator_set_color(tess, rgba(r, g, b, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_Y_P, voxel->x, voxel->z, voxel->y, max_x, 1, max_z);
             }
 
-            matrix_push(matrix_model);
-            matrix_scale3(matrix_model, kv6->scale);
-            matrix_translate(matrix_model, -kv6->xpiv, -kv6->zpiv, -kv6->ypiv);
-            matrix_upload();
+            if (voxel->visfaces & KV6_VIS_NEG_Y) {
+                size_t max_x, max_z;
+                greedy_mesh(kv6, voxel, marked, &max_x, &max_z, KV6_VIS_NEG_Y);
 
-            glx_displaylist_draw(kv6->display_list + 0, GLX_DISPLAYLIST_NORMAL);
-
-            if(!kv6->colorize)
-                glEnable(GL_TEXTURE_2D);
-
-            switch(team) {
-                case TEAM_1: {
-                    float color[] {gamestate.team_1.red * 0.75F / 255.0F,
-                                   gamestate.team_1.green * 0.75F / 255.0F,
-                                   gamestate.team_1.blue * 0.75F / 255.0F, 1.0F};
-                    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
-                    break;
-                }
-                case TEAM_2: {
-                    float color[] {gamestate.team_2.red * 0.75F / 255.0F,
-                                   gamestate.team_2.green * 0.75F / 255.0F,
-                                   gamestate.team_2.blue * 0.75F / 255.0F, 1.0F};
-                    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
-                    break;
-                }
-                default: {
-                    float color[] {0, 0, 0, 1};
-                    glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
-                }
+                tesselator_set_color(tess, rgba(r * 0.6F, g * 0.6F, b * 0.6F, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_Y_N, voxel->x, voxel->z, voxel->y, max_x, 1, max_z);
             }
 
-            glx_displaylist_draw(kv6->display_list + 1, GLX_DISPLAYLIST_NORMAL);
+            if (voxel->visfaces & KV6_VIS_NEG_Z) {
+                size_t max_x, max_y;
+                greedy_mesh(kv6, voxel, marked, &max_x, &max_y, KV6_VIS_NEG_Z);
 
-            matrix_pop(matrix_model);
+                tesselator_set_color(tess, rgba(r * 0.95F, g * 0.95F, b * 0.95F, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_Z_N, voxel->x, voxel->z - (max_y - 1), voxel->y,
+                                              max_x, max_y, 1);
+            }
 
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            glDisable(GL_TEXTURE_2D);
+            if (voxel->visfaces & KV6_VIS_POS_Z) {
+                size_t max_x, max_y;
+                greedy_mesh(kv6, voxel, marked, &max_x, &max_y, KV6_VIS_POS_Z);
 
-            glDisable(GL_NORMALIZE);
-            glDisable(GL_COLOR_MATERIAL);
-            glDisable(GL_LIGHT0);
-            glDisable(GL_LIGHTING);
+                tesselator_set_color(tess, rgba(r * 0.9F, g * 0.9F, b * 0.9F, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_Z_P, voxel->x, voxel->z - (max_y - 1), voxel->y,
+                                              max_x, max_y, 1);
+            }
+
+            if(voxel->visfaces & KV6_VIS_NEG_X) {
+                size_t max_y, max_z;
+                greedy_mesh(kv6, voxel, marked, &max_y, &max_z, KV6_VIS_NEG_X);
+
+                tesselator_set_color(tess, rgba(r * 0.85F, g * 0.85F, b * 0.85F, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_X_N, voxel->x, voxel->z - (max_y - 1), voxel->y, 1,
+                                              max_y, max_z);
+            }
+
+            if(voxel->visfaces & KV6_VIS_POS_X) {
+                size_t max_y, max_z;
+                greedy_mesh(kv6, voxel, marked, &max_y, &max_z, KV6_VIS_POS_X);
+
+                tesselator_set_color(tess, rgba(r * 0.8F, g * 0.8F, b * 0.8F, 0));
+                tesselator_addi_cube_face_adv(tess, CUBE_FACE_X_P, voxel->x, voxel->z - (max_y - 1), voxel->y, 1,
+                                              max_y, max_z);
+            }
         }
+
+        tesselator_glx(&tess_color, kv6->display_list + 0);
+        tesselator_glx(&tess_team, kv6->display_list + 1);
+
+        tesselator_free(&tess_color);
+        tesselator_free(&tess_team);
+
+        kv6->has_display_list = true;
     } else {
-        // render like on voxlap
-        if(!kv6->has_display_list) {
-            float vertices[2][kv6->voxel_count * 3];
-            uint8_t colors[2][kv6->voxel_count * 4];
-            int8_t normals[2][kv6->voxel_count * 3];
-            kv6->has_display_list = true;
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_COLOR_MATERIAL);
+        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+        glEnable(GL_NORMALIZE);
 
-            int cnt[2] = {0, 0};
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_CONSTANT);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_CONSTANT);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+        glBindTexture(GL_TEXTURE_2D, texture_dummy.texture_id);
 
-            glx_displaylist_create(kv6->display_list + 0, !kv6->colorize, true);
-            glx_displaylist_create(kv6->display_list + 1, false, true);
-
-            for(int i = 0; i < kv6->voxel_count; i++) {
-                int b = red(kv6->voxels[i].color);
-                int g = green(kv6->voxels[i].color);
-                int r = blue(kv6->voxels[i].color);
-                int a = alpha(kv6->voxels[i].color);
-
-                int ind = ((r | g | b) == 0) ? 1 : 0;
-
-                colors[ind][cnt[ind] * 4 + 0] = r;
-                colors[ind][cnt[ind] * 4 + 1] = g;
-                colors[ind][cnt[ind] * 4 + 2] = b;
-                colors[ind][cnt[ind] * 4 + 3] = 255;
-
-                normals[ind][cnt[ind] * 3 + 0] = kv6_normals[a][0] * 128;
-                normals[ind][cnt[ind] * 3 + 1] = -kv6_normals[a][2] * 128;
-                normals[ind][cnt[ind] * 3 + 2] = kv6_normals[a][1] * 128;
-
-                vertices[ind][cnt[ind] * 3 + 0] = (kv6->voxels[i].x - kv6->xpiv + 0.5F) * kv6->scale;
-                vertices[ind][cnt[ind] * 3 + 1] = (kv6->voxels[i].z - kv6->zpiv + 0.5F) * kv6->scale;
-                vertices[ind][cnt[ind] * 3 + 2] = (kv6->voxels[i].y - kv6->ypiv + 0.5F) * kv6->scale;
-
-                cnt[ind]++;
-            }
-
-            glx_displaylist_update(kv6->display_list + 0, cnt[0], GLX_DISPLAYLIST_POINTS, colors[0], vertices[0],
-                                   normals[0]);
-
-            glx_displaylist_update(kv6->display_list + 1, cnt[1], GLX_DISPLAYLIST_POINTS, colors[1], vertices[1],
-                                   normals[1]);
-
-            if(kv6_program < 0) {
-                kv6_program
-                    = glx_shader("uniform float size;\n"
-                                 "uniform vec3 fog;\n"
-                                 "uniform vec3 camera;\n"
-                                 "uniform mat4 model;\n"
-                                 "uniform float dist_factor;\n"
-                                 "void main(void) {\n"
-                                 "	gl_Position = gl_ModelViewProjectionMatrix*gl_Vertex;\n"
-                                 "	float dist = length((model*gl_Vertex).xz-camera.xz)*dist_factor;\n"
-                                 "	vec3 N = normalize(model*vec4(gl_Normal,0)).xyz;\n"
-                                 "	vec3 L = normalize(vec3(0,-1,1));\n"
-                                 "	float d = clamp(dot(N,L),0.0,1.0)*0.5+0.5;\n"
-                                 "	gl_FrontColor = mix(vec4(d,d,d,1.0)*gl_Color,vec4(fog,1.0),min(dist,1.0));\n"
-                                 "	gl_PointSize = size/gl_Position.w;\n"
-                                 "}\n",
-                                 "void main(void) {\n"
-                                 "	gl_FragColor = gl_Color;\n"
-                                 "}\n");
-            }
+        if(kv6->colorize) {
+            glEnable(GL_TEXTURE_2D);
+            float color[] {kv6->red, kv6->green, kv6->blue, 1.0F};
+            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
         }
 
-        float near_plane_height
-            = (float)settings.window_height / (2.0F * tan(glm_persp_fovy(matrix_projection) / 2.0F));
+        matrix_push(matrix_model);
+        matrix_scale3(matrix_model, kv6->scale);
+        matrix_translate(matrix_model, -kv6->xpiv, -kv6->zpiv, -kv6->ypiv);
+        matrix_upload();
 
-        float len_x = len3D(matrix_model[0][0], matrix_model[1][0], matrix_model[2][0]);
-        float len_y = len3D(matrix_model[0][1], matrix_model[1][1], matrix_model[2][1]);
-        float len_z = len3D(matrix_model[0][2], matrix_model[1][2], matrix_model[2][2]);
+        glx_displaylist_draw(kv6->display_list + 0, GLX_DISPLAYLIST_NORMAL);
 
-        if (!glx_version)
-        {
-            float point[] {0.0F, 0.0F, 1.0F};
-            glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, (float*) &point);
-            glPointSize(1.414F * near_plane_height * kv6->scale * (len_x + len_y + len_z) / 3.0F);
-            glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
-            glEnable(GL_COLOR_MATERIAL);
-            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-            glEnable(GL_NORMALIZE);
-        }
-
-        if (glx_version) {
-            glEnable(GL_PROGRAM_POINT_SIZE);
-            glUseProgram(kv6_program);
-            glUniform1f(glGetUniformLocation(kv6_program, "dist_factor"),
-                        glx_fog ? 1.0F / settings.render_distance : 0.0F);
-            glUniform1f(glGetUniformLocation(kv6_program, "size"),
-                        1.414F * near_plane_height * kv6->scale * (len_x + len_y + len_z) / 3.0F);
-            glUniform3f(glGetUniformLocation(kv6_program, "fog"), fog_color[0], fog_color[1], fog_color[2]);
-            glUniform3f(glGetUniformLocation(kv6_program, "camera"), camera_x, camera_y, camera_z);
-            glUniformMatrix4fv(glGetUniformLocation(kv6_program, "model"), 1, 0, (float*)matrix_model);
-        }
-
-        if (settings.multisamples)
-            glDisable(GL_MULTISAMPLE);
-
-        if (kv6->colorize)
-            glColor3f(kv6->red, kv6->green, kv6->blue);
-
-        glx_displaylist_draw(kv6->display_list + 0, GLX_DISPLAYLIST_POINTS);
+        if (!kv6->colorize) glEnable(GL_TEXTURE_2D);
 
         switch(team) {
-            case TEAM_1:
-                glColor3ub(gamestate.team_1.red * 0.75F, gamestate.team_1.green * 0.75F, gamestate.team_1.blue * 0.75F);
+            case TEAM_1: {
+                float color[] {gamestate.team_1.red * 0.75F / 255.0F,
+                               gamestate.team_1.green * 0.75F / 255.0F,
+                               gamestate.team_1.blue * 0.75F / 255.0F, 1.0F};
+                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
                 break;
-            case TEAM_2:
-                glColor3ub(gamestate.team_2.red * 0.75F, gamestate.team_2.green * 0.75F, gamestate.team_2.blue * 0.75F);
+            }
+            case TEAM_2: {
+                float color[] {gamestate.team_2.red * 0.75F / 255.0F,
+                               gamestate.team_2.green * 0.75F / 255.0F,
+                               gamestate.team_2.blue * 0.75F / 255.0F, 1.0F};
+                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
                 break;
-            default: glColor3ub(0, 0, 0);
+            }
+            default: {
+                float color[] {0, 0, 0, 1};
+                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
+            }
         }
 
-        glx_displaylist_draw(kv6->display_list + 1, GLX_DISPLAYLIST_POINTS);
+        glx_displaylist_draw(kv6->display_list + 1, GLX_DISPLAYLIST_NORMAL);
 
-        if (settings.multisamples)
-            glEnable(GL_MULTISAMPLE);
-        if (glx_version) {
-            glUseProgram(0);
-            glDisable(GL_PROGRAM_POINT_SIZE);
-        }
+        matrix_pop(matrix_model);
 
-        if (!glx_version) {
-            glDisable(GL_NORMALIZE);
-            glDisable(GL_COLOR_MATERIAL);
-            glDisable(GL_LIGHT0);
-            glDisable(GL_LIGHTING);
-        }
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glDisable(GL_TEXTURE_2D);
+
+        glDisable(GL_NORMALIZE);
+        glDisable(GL_COLOR_MATERIAL);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_LIGHTING);
     }
 }

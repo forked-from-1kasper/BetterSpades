@@ -668,7 +668,6 @@ int main(int argc, char** argv) {
     settings.mouse_sensitivity = MOUSE_SENSITIVITY;
     settings.show_fps = 0;
     settings.volume = 10;
-    settings.voxlap_models = 0;
     settings.force_displaylist = 0;
     settings.invert_y = 0;
     settings.smooth_fog = 0;

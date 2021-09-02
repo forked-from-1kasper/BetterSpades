@@ -45,7 +45,6 @@ extern struct RENDER_OPTIONS {
     float mouse_sensitivity;
     int show_fps;
     int volume;
-    int voxlap_models;
     int force_displaylist;
     int invert_y;
     int smooth_fog;

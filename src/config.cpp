@@ -78,7 +78,6 @@ void config_save() {
     config_setf("client", "mouse_sensitivity", settings.mouse_sensitivity);
     config_seti("client", "vol", settings.volume);
     config_seti("client", "show_fps", settings.show_fps);
-    config_seti("client", "voxlap_models", settings.voxlap_models);
     config_seti("client", "force_displaylist", settings.force_displaylist);
     config_seti("client", "inverty", settings.invert_y);
     config_seti("client", "smooth_fog", settings.smooth_fog);
@@ -140,8 +139,6 @@ static int config_read_key(void* user, const char* section, const char* name, co
             sound_volume(settings.volume / 10.0F);
         } else if(!strcmp(name, "show_fps")) {
             settings.show_fps = atoi(value);
-        } else if(!strcmp(name, "voxlap_models")) {
-            settings.voxlap_models = atoi(value);
         } else if(!strcmp(name, "force_displaylist")) {
             settings.force_displaylist = atoi(value);
         } else if(!strcmp(name, "inverty")) {
@@ -411,12 +408,6 @@ void config_reload() {
         "Chat shadow", "Dark chat background",
     };
 
-    config_setting voxlap_models {
-        &settings_tmp.voxlap_models,
-        CONFIG_TYPE_INT, 0, 1,
-        "Voxlap models", "Render models like in voxlap",
-    };
-
     config_setting hold_down_sights {
         &settings_tmp.hold_down_sights,
         CONFIG_TYPE_INT, 0, 1,
@@ -469,7 +460,6 @@ void config_reload() {
     list_add(&config_settings, &fullscreen);
     list_add(&config_settings, &multisamples);
     list_add(&config_settings, &chat_shadow);
-    list_add(&config_settings, &voxlap_models);
     list_add(&config_settings, &hold_down_sights);
     list_add(&config_settings, &greedy_meshing);
     list_add(&config_settings, &force_displaylist);
