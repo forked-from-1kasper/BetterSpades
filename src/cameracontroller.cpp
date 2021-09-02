@@ -102,13 +102,6 @@ void cameracontroller_fps(float dt) {
         players[local_player_id].items_show = 1;
     }
 
-#ifdef USE_TOUCH
-    if(!local_player_ammo) {
-        hud_ingame.input_keyboard(WINDOW_KEY_RELOAD, WINDOW_PRESS, 0, 0);
-        hud_ingame.input_keyboard(WINDOW_KEY_RELOAD, WINDOW_RELEASE, 0, 0);
-    }
-#endif
-
     last_cy = players[local_player_id].physics.eye.y - players[local_player_id].physics.velocity.y * 0.4F;
 
     if(chat_input_mode == CHAT_NO_INPUT) {

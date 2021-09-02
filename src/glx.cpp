@@ -35,23 +35,14 @@ int glx_version = 0;
 int glx_fog = 0;
 
 static int glx_major_ver() {
-#ifdef OPENGL_ES
-    return 2;
-#else
     return atoi((const char*) glGetString(GL_VERSION));
-#endif
 }
 
 void glx_init() {
-#ifndef OPENGL_ES
     glx_version = glx_major_ver() >= 2;
-#else
-    glx_version = 0;
-#endif
 }
 
 int glx_shader(const char* vertex, const char* fragment) {
-#ifndef OPENGL_ES
     int v, f;
     if(vertex) {
         v = glCreateShader(GL_VERTEX_SHADER);
@@ -72,37 +63,24 @@ int glx_shader(const char* vertex, const char* fragment) {
         glAttachShader(program, f);
     glLinkProgram(program);
     return program;
-#else
-    return 0;
-#endif
 }
 
 void glx_displaylist_create(struct glx_displaylist* x, bool has_color, bool has_normal) {
     x->has_color = has_color;
     x->has_normal = has_normal;
 
-#ifndef OPENGL_ES
     if(!glx_version || settings.force_displaylist) {
         x->legacy = glGenLists(1);
     } else {
         glGenBuffers(1, &x->modern);
     }
-#else
-    glGenBuffers(1, &x->modern);
-#endif
+
     x->buffer_size = 0;
 }
 
 void glx_displaylist_destroy(struct glx_displaylist* x) {
-#ifndef OPENGL_ES
-    if(!glx_version || settings.force_displaylist) {
-        glDeleteLists(x->legacy, 1);
-    } else {
-        glDeleteBuffers(1, &x->modern);
-    }
-#else
-    glDeleteBuffers(1, &x->modern);
-#endif
+    if (!glx_version || settings.force_displaylist) glDeleteLists(x->legacy, 1);
+    else glDeleteBuffers(1, &x->modern);
 }
 
 void glx_displaylist_update(struct glx_displaylist* x, size_t size, int type, void* color, void* vertex, void* normal) {
@@ -110,7 +88,6 @@ void glx_displaylist_update(struct glx_displaylist* x, size_t size, int type, vo
     x->buffer_size = maxc(x->buffer_size, size);
     x->size = size;
 
-#ifndef OPENGL_ES
     if(!glx_version || settings.force_displaylist) {
         glEnableClientState(GL_VERTEX_ARRAY);
         if(x->has_color)
@@ -141,7 +118,6 @@ void glx_displaylist_update(struct glx_displaylist* x, size_t size, int type, vo
         if(x->has_normal)
             glDisableClientState(GL_NORMAL_ARRAY);
     } else {
-#endif
         size_t len_vertex = ((type == GLX_DISPLAYLIST_NORMAL) ? sizeof(GLshort) : sizeof(GLfloat)) * 3;
         size_t len_color = x->has_color ? (sizeof(GLubyte) * 4) : 0;
         size_t len_normal = x->has_normal ? (sizeof(GLbyte) * 3) : 0;
@@ -163,17 +139,13 @@ void glx_displaylist_update(struct glx_displaylist* x, size_t size, int type, vo
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-#ifndef OPENGL_ES
     }
-#endif
 }
 
 void glx_displaylist_draw(struct glx_displaylist* x, int type) {
-#ifndef OPENGL_ES
     if(!glx_version || settings.force_displaylist) {
         glCallList(x->legacy);
     } else {
-#endif
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, x->modern);
 
@@ -202,11 +174,7 @@ void glx_displaylist_draw(struct glx_displaylist* x, int type) {
         if(type == GLX_DISPLAYLIST_POINTS) {
             glDrawArrays(GL_POINTS, 0, x->size);
         } else {
-#ifdef OPENGL_ES
-            glDrawArrays(GL_TRIANGLES, 0, x->size);
-#else
         glDrawArrays(GL_QUADS, 0, x->size);
-#endif
         }
 
         if(x->has_normal)
@@ -214,16 +182,13 @@ void glx_displaylist_draw(struct glx_displaylist* x, int type) {
         if(x->has_color)
             glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
-#ifndef OPENGL_ES
     }
-#endif
 }
 
 void glx_enable_sphericalfog() {
-#ifndef OPENGL_ES
     float color[] {fog_color[0], fog_color[1], fog_color[2], 1.0F};
 
-    if(!settings.smooth_fog) {
+    if (!settings.smooth_fog) {
         glActiveTexture(GL_TEXTURE1);
         glEnable(GL_TEXTURE_2D);
 
@@ -270,42 +235,11 @@ void glx_enable_sphericalfog() {
         glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 128.0F);
         glNormal3f(0.0F, 1.0F, 0.0F);
     }
-#else
-    matrix_push(matrix_model);
-    matrix_identity(matrix_model);
-    matrix_upload();
-    matrix_pop(matrix_model);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_COLOR_MATERIAL);
-    // glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-    float amb[4] = {0.0F, 0.0F, 0.0F, 1.0F};
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
-
-    float lpos[4] = {camera_x, (settings.render_distance * map_size_y) / 16.0F, camera_z, 1.0F};
-    glLightfv(GL_LIGHT1, GL_POSITION, lpos);
-    float dir[3] = {0.0F, -1.0F, 0.0F};
-    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, dir);
-    float dif[4] = {0.0F, 0.0F, 0.0F, 1.0F};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, dif);
-    float amb2[4] = {1.0F, 1.0F, 1.0F, 1.0F};
-    glLightfv(GL_LIGHT1, GL_AMBIENT, amb2);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, tan(16.0F / map_size_y) / PI * 180.0F);
-    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 128.0F);
-    glNormal3f(0.0F, 1.0F, 0.0F);
-    glEnable(GL_FOG);
-    glFogf(GL_FOG_MODE, GL_LINEAR);
-    glFogf(GL_FOG_START, 0.0F);
-    glFogf(GL_FOG_END, settings.render_distance);
-    glFogfv(GL_FOG_COLOR, fog_color);
-#endif
     glx_fog = 1;
 }
 
 void glx_disable_sphericalfog() {
-#ifndef OPENGL_ES
-    if(!settings.smooth_fog) {
+    if (!settings.smooth_fog) {
         glActiveTexture(GL_TEXTURE1);
         glDisable(GL_TEXTURE_GEN_T);
         glDisable(GL_TEXTURE_GEN_S);
@@ -320,13 +254,5 @@ void glx_disable_sphericalfog() {
         float a[4] = {0.2F, 0.2F, 0.2F, 1.0F};
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, a);
     }
-#else
-    glDisable(GL_FOG);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_LIGHT1);
-    glDisable(GL_LIGHTING);
-    float a[4] = {0.2F, 0.2F, 0.2F, 1.0F};
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, a);
-#endif
     glx_fog = 0;
 }

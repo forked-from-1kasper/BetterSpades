@@ -85,21 +85,14 @@ void chat_showpopup(const char* msg, float duration, int color) {
 }
 
 void drawScene() {
-    if(settings.ambient_occlusion) {
-        glShadeModel(GL_SMOOTH);
-    } else {
-        glShadeModel(GL_FLAT);
-    }
+    if (settings.ambient_occlusion) glShadeModel(GL_SMOOTH);
+    else glShadeModel(GL_FLAT);
 
     matrix_upload();
     chunk_draw_visible();
 
-    if(settings.smooth_fog) {
-#ifdef OPENGL_ES
-        glFogx(GL_FOG_MODE, GL_EXP2);
-#else
+    if (settings.smooth_fog) {
         glFogi(GL_FOG_MODE, GL_EXP2);
-#endif
         glFogf(GL_FOG_DENSITY, 0.015F);
         glFogfv(GL_FOG_COLOR, fog_color);
         glEnable(GL_FOG);
@@ -348,15 +341,7 @@ void display() {
                 matrix_push(matrix_projection);
                 matrix_translate(matrix_projection, 0.0F, -0.25F, 0.0F);
                 matrix_upload_p();
-#ifdef OPENGL_ES
-                if(camera_mode == CAMERAMODE_FPS)
-                    glx_disable_sphericalfog();
-#endif
                 player_render(&players[local_player_id], local_player_id);
-#ifdef OPENGL_ES
-                if(camera_mode == CAMERAMODE_FPS)
-                    glx_enable_sphericalfog();
-#endif
                 matrix_pop(matrix_projection);
                 glDepthRange(0.0F, 1.0F);
                 players[local_player_id].physics.eye.y = tmp2;
@@ -473,11 +458,7 @@ void init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-#ifdef OPENGL_ES
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-#else
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-#endif
     glClearDepth(1.0F);
     glDepthFunc(GL_LEQUAL);
     glShadeModel(GL_SMOOTH);
@@ -578,7 +559,6 @@ void keys(struct window_instance* window, int key, int scancode, int action, int
     if(action == WINDOW_RELEASE && !config_key(key)->toggle)
         window_pressed_keys[key] = 0;
 
-#ifdef USE_GLFW
     if(key == WINDOW_KEY_FULLSCREEN && action == WINDOW_PRESS) { // switch between fullscreen
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         if(!settings.fullscreen) {
@@ -590,7 +570,6 @@ void keys(struct window_instance* window, int key, int scancode, int action, int
             settings.fullscreen = 0;
         }
     }
-#endif
 
     if(key == WINDOW_KEY_SCREENSHOT && action == WINDOW_PRESS) { // take screenshot
         time_t pic_time;
@@ -696,18 +675,14 @@ int main(int argc, char** argv) {
     settings.camera_fov = CAMERA_DEFAULT_FOV;
     strcpy(settings.name, "DEV_CLIENT");
 
-#ifdef USE_TOUCH
-    mkdir("/sdcard/BetterSpades");
-#else
-    if(!file_dir_exists("logs"))
+    if (!file_dir_exists("logs"))
         file_dir_create("logs");
-    if(!file_dir_exists("cache"))
+    if (!file_dir_exists("cache"))
         file_dir_create("cache");
-    if(!file_dir_exists("screenshots"))
+    if (!file_dir_exists("screenshots"))
         file_dir_create("screenshots");
-    if(!file_dir_exists("vxl"))
+    if (!file_dir_exists("vxl"))
         file_dir_create("vxl");
-#endif
 
     log_set_level(LOG_INFO);
 
@@ -724,10 +699,7 @@ int main(int argc, char** argv) {
 
     window_init();
 
-#ifndef OPENGL_ES
-    if(glewInit())
-        log_error("Could not load extended OpenGL functions!");
-#endif
+    if (glewInit()) log_error("Could not load extended OpenGL functions!");
 
     log_info("Vendor: %s", glGetString(GL_VENDOR));
     log_info("Renderer: %s", glGetString(GL_RENDERER));

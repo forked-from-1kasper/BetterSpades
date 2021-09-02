@@ -100,11 +100,7 @@ enum {
 };
 
 struct window_finger {
-#ifdef USE_SDL
-    SDL_FingerID finger;
-#else
     int finger;
-#endif
     float down_time;
     int full;
     struct {

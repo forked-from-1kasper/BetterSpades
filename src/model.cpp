@@ -416,9 +416,7 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
             glEnable(GL_COLOR_MATERIAL);
-#ifndef OPENGL_ES
             glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-#endif
             glEnable(GL_NORMALIZE);
 
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -556,9 +554,7 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
         float len_y = len3D(matrix_model[0][1], matrix_model[1][1], matrix_model[2][1]);
         float len_z = len3D(matrix_model[0][2], matrix_model[1][2], matrix_model[2][2]);
 
-#ifndef OPENGL_ES
-        if(!glx_version)
-#endif
+        if (!glx_version)
         {
             float point[] {0.0F, 0.0F, 1.0F};
             glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, (float*) &point);
@@ -566,14 +562,11 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
             glEnable(GL_COLOR_MATERIAL);
-#ifndef OPENGL_ES
             glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-#endif
             glEnable(GL_NORMALIZE);
         }
 
-#ifndef OPENGL_ES
-        if(glx_version) {
+        if (glx_version) {
             glEnable(GL_PROGRAM_POINT_SIZE);
             glUseProgram(kv6_program);
             glUniform1f(glGetUniformLocation(kv6_program, "dist_factor"),
@@ -584,11 +577,11 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
             glUniform3f(glGetUniformLocation(kv6_program, "camera"), camera_x, camera_y, camera_z);
             glUniformMatrix4fv(glGetUniformLocation(kv6_program, "model"), 1, 0, (float*)matrix_model);
         }
-#endif
-        if(settings.multisamples)
+
+        if (settings.multisamples)
             glDisable(GL_MULTISAMPLE);
 
-        if(kv6->colorize)
+        if (kv6->colorize)
             glColor3f(kv6->red, kv6->green, kv6->blue);
 
         glx_displaylist_draw(kv6->display_list + 0, GLX_DISPLAYLIST_POINTS);
@@ -605,19 +598,14 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
 
         glx_displaylist_draw(kv6->display_list + 1, GLX_DISPLAYLIST_POINTS);
 
-        if(settings.multisamples)
+        if (settings.multisamples)
             glEnable(GL_MULTISAMPLE);
-#ifndef OPENGL_ES
-        if(glx_version) {
+        if (glx_version) {
             glUseProgram(0);
             glDisable(GL_PROGRAM_POINT_SIZE);
         }
-#endif
 
-#ifndef OPENGL_ES
-        if(!glx_version)
-#endif
-        {
+        if (!glx_version) {
             glDisable(GL_NORMALIZE);
             glDisable(GL_COLOR_MATERIAL);
             glDisable(GL_LIGHT0);

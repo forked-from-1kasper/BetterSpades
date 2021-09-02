@@ -23,11 +23,7 @@
 
 #include <glx.hpp>
 
-#ifdef OPENGL_ES
-#define TESSELATE_TRIANGLES
-#else
 #define TESSELATE_QUADS
-#endif
 
 enum tesselator_vertex_type {
     VERTEX_INT,

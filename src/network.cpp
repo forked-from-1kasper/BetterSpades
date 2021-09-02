@@ -308,14 +308,14 @@ void read_PacketStateData(void* data, int len) {
             }
             if(r == LIBDEFLATE_SUCCESS) {
                 map_vxl_load(decompressed, decompressed_size);
-/*#ifndef USE_TOUCH
+/*
                 char filename[128];
                 sprintf(filename, "cache/%08X.vxl", libdeflate_crc32(0, decompressed, decompressed_size));
                 log_info("%s", filename);
                 FILE* f = fopen(filename, "wb");
                 fwrite(decompressed, 1, decompressed_size, f);
                 fclose(f);
-#endif*/
+*/
                 chunk_rebuild_all();
                 break;
             }
@@ -831,23 +831,19 @@ void read_PacketVersionGet(void* data, int len) {
     ver.major = BETTERSPADES_MAJOR;
     ver.minor = BETTERSPADES_MINOR;
     ver.revision = BETTERSPADES_PATCH;
-#ifndef OPENGL_ES
+
 #ifdef OS_WINDOWS
     char* os = "BetterSpades (Windows) " GIT_COMMIT_HASH;
 #endif
+
 #ifdef OS_LINUX
     char* os = "BetterSpades (Linux) " GIT_COMMIT_HASH;
 #endif
+
 #ifdef OS_APPLE
     char* os = "BetterSpades (Apple) " GIT_COMMIT_HASH;
 #endif
-#else
-#ifdef USE_TOUCH
-    char* os = "BetterSpades (Android) " GIT_COMMIT_HASH;
-#else
-    char* os = "BetterSpades (Embedded) " GIT_COMMIT_HASH;
-#endif
-#endif
+
     strcpy(ver.operatingsystem, os);
     network_send(PACKET_VERSIONSEND_ID, &ver, sizeof(ver) - sizeof(ver.operatingsystem) + strlen(os));
 }

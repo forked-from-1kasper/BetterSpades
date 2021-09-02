@@ -277,58 +277,6 @@ void config_reload() {
     else
         list_clear(&config_keys);
 
-#ifdef USE_SDL
-    config_register_key(WINDOW_KEY_UP, SDLK_w, "move_forward", 0, "Forward", "Movement");
-    config_register_key(WINDOW_KEY_DOWN, SDLK_s, "move_backward", 0, "Backward", "Movement");
-    config_register_key(WINDOW_KEY_LEFT, SDLK_a, "move_left", 0, "Left", "Movement");
-    config_register_key(WINDOW_KEY_RIGHT, SDLK_d, "move_right", 0, "Right", "Movement");
-    config_register_key(WINDOW_KEY_SPACE, SDLK_SPACE, "jump", 0, "Jump", "Movement");
-    config_register_key(WINDOW_KEY_SPRINT, SDLK_LSHIFT, "sprint", 0, "Sprint", "Movement");
-    config_register_key(WINDOW_KEY_SHIFT, SDLK_LSHIFT, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_CURSOR_UP, SDLK_UP, "cube_color_up", 0, "Color up", "Block");
-    config_register_key(WINDOW_KEY_CURSOR_DOWN, SDLK_DOWN, "cube_color_down", 0, "Color down", "Block");
-    config_register_key(WINDOW_KEY_CURSOR_LEFT, SDLK_LEFT, "cube_color_left", 0, "Color left", "Block");
-    config_register_key(WINDOW_KEY_CURSOR_RIGHT, SDLK_RIGHT, "cube_color_right", 0, "Color right", "Block");
-    config_register_key(WINDOW_KEY_BACKSPACE, SDLK_BACKSPACE, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_TOOL1, SDLK_1, "tool_spade", 0, "Select spade", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_TOOL2, SDLK_2, "tool_block", 0, "Select block", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_TOOL3, SDLK_3, "tool_gun", 0, "Select gun", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_TOOL4, SDLK_4, "tool_grenade", 0, "Select grenade", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_TAB, SDLK_TAB, "view_score", 0, "Score", "Information");
-    config_register_key(WINDOW_KEY_ESCAPE, SDLK_ESCAPE, "quit_game", 0, "Quit", "Game");
-    config_register_key(WINDOW_KEY_ESCAPE, SDLK_AC_BACK, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_MAP, SDLK_m, "view_map", 1, "Map", "Information");
-    config_register_key(WINDOW_KEY_CROUCH, SDLK_LCTRL, "crouch", 0, "Crouch", "Movement");
-    config_register_key(WINDOW_KEY_SNEAK, SDLK_v, "sneak", 0, "Sneak", "Movement");
-    config_register_key(WINDOW_KEY_ENTER, SDLK_RETURN, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_F1, SDLK_F1, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_F2, SDLK_F2, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_F3, SDLK_F3, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_F4, SDLK_F4, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_YES, SDLK_y, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_YES, SDLK_z, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_NO, SDLK_n, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_VOLUME_UP, SDLK_KP_PLUS, "volume_up", 0, "Volume up", "Game");
-    config_register_key(WINDOW_KEY_VOLUME_DOWN, SDLK_KP_MINUS, "volume_down", 0, "Volume down", "Game");
-    config_register_key(WINDOW_KEY_V, SDLK_v, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_RELOAD, SDLK_r, "reload", 0, "Reload", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_CHAT, SDLK_t, "chat_global", 0, "Chat", "Game");
-    config_register_key(WINDOW_KEY_FULLSCREEN, SDLK_F11, "fullscreen", 0, "Fullscreen", "Game");
-    config_register_key(WINDOW_KEY_SCREENSHOT, SDLK_F5, "screenshot", 0, "Screenshot", "Information");
-    config_register_key(WINDOW_KEY_CHANGETEAM, SDLK_COMMA, "change_team", 0, "Team select", "Game");
-    config_register_key(WINDOW_KEY_CHANGEWEAPON, SDLK_PERIOD, "change_weapon", 0, "Gun select", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_PICKCOLOR, SDLK_e, "cube_color_sample", 0, "Pick color", "Block");
-    config_register_key(WINDOW_KEY_COMMAND, SDLK_SLASH, "chat_command", 0, "Command", "Game");
-    config_register_key(WINDOW_KEY_HIDEHUD, SDLK_F6, "hide_hud", 1, "Hide HUD", "Game");
-    config_register_key(WINDOW_KEY_LASTTOOL, SDLK_q, "last_tool", 0, "Last tool", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_NETWORKSTATS, SDLK_F12, "network_stats", 1, "Network stats", "Information");
-    config_register_key(WINDOW_KEY_SAVE_MAP, SDLK_F9, "save_map", 0, "Save map", "Game");
-    config_register_key(WINDOW_KEY_SELECT1, SDLK_1, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_SELECT2, SDLK_2, NULL, 0, NULL, NULL);
-    config_register_key(WINDOW_KEY_SELECT3, SDLK_3, NULL, 0, NULL, NULL);
-#endif
-
-#ifdef USE_GLFW
     config_register_key(WINDOW_KEY_UP, GLFW_KEY_W, "move_forward", 0, "Forward", "Movement");
     config_register_key(WINDOW_KEY_DOWN, GLFW_KEY_S, "move_backward", 0, "Backward", "Movement");
     config_register_key(WINDOW_KEY_LEFT, GLFW_KEY_A, "move_left", 0, "Left", "Movement");
@@ -376,7 +324,6 @@ void config_reload() {
     config_register_key(WINDOW_KEY_SELECT1, GLFW_KEY_1, NULL, 0, NULL, NULL);
     config_register_key(WINDOW_KEY_SELECT2, GLFW_KEY_2, NULL, 0, NULL, NULL);
     config_register_key(WINDOW_KEY_SELECT3, GLFW_KEY_3, NULL, 0, NULL, NULL);
-#endif
 
     list_sort(&config_keys, config_key_cmp);
 

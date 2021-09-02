@@ -1097,44 +1097,6 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
         sprintf(debug_str, "%i", (int)fps);
         font_render(11.0F * scalef, settings.window_height * 0.33F - 20.0F * scalef, 20.0F * scalef, debug_str);
     }
-
-#ifdef USE_TOUCH
-    glColor3f(1.0F, 1.0F, 1.0F);
-    if(camera_mode == CAMERAMODE_FPS || camera_mode == CAMERAMODE_SPECTATOR) {
-        texture_draw_rotated(&texture_ui_joystick, settings.window_height * 0.3F, settings.window_height * 0.3F,
-                             settings.window_height * 0.4F, settings.window_height * 0.4F, 0.0F);
-        texture_draw_rotated(&texture_ui_knob, settings.window_height * 0.3F, settings.window_height * 0.3F,
-                             settings.window_height * 0.075F, settings.window_height * 0.075F, 0.0F);
-        texture_draw_rotated(&texture_ui_knob, hud_ingame_touch_x + settings.window_height * 0.3F,
-                             hud_ingame_touch_y + settings.window_height * 0.3F, settings.window_height * 0.1F,
-                             settings.window_height * 0.1F, 0.0F);
-    }
-
-    int k = 0;
-    char str[128];
-    while(hud_ingame_onscreencontrol(k, str, -1)) {
-        texture_draw_rotated(&texture_ui_input, settings.window_height * (0.2F + 0.175F * k),
-                             settings.window_height * 0.96F, settings.window_height * 0.15F,
-                             settings.window_height * 0.1F, 0.0F);
-        font_centered(settings.window_height * (0.2F + 0.175F * k), settings.window_height * 0.98F,
-                      settings.window_height * 0.04F, str);
-        k++;
-    }
-    if(hud_ingame_onscreencontrol(64, str, -1)) {
-        texture_draw_rotated(&texture_ui_input, settings.window_width - settings.window_height * 0.075F,
-                             settings.window_height * 0.6F, settings.window_height * 0.15F,
-                             settings.window_height * 0.1F, 0.0F);
-        font_centered(settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.62F,
-                      settings.window_height * 0.04F, str);
-    }
-    if(hud_ingame_onscreencontrol(65, str, -1)) {
-        texture_draw_rotated(&texture_ui_input, settings.window_width - settings.window_height * 0.075F,
-                             settings.window_height * 0.45F, settings.window_height * 0.15F,
-                             settings.window_height * 0.1F, 0.0F);
-        font_centered(settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.47F,
-                      settings.window_height * 0.04F, str);
-    }
-#endif
 }
 
 static void hud_ingame_scroll(double yoffset) {
