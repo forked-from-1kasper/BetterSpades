@@ -2396,7 +2396,7 @@ static void hud_settings_render(mu_Context* ctx, float scalex, float scaley) {
         if(mu_header_ex(ctx, "All settings", MU_OPT_EXPANDED)) {
             int width = mu_get_current_container(ctx)->body.w;
 
-            for(int k = 0; k < list_size(&config_settings); k++) {
+            for (int k = 0; k < list_size(&config_settings); k++) {
                 auto a = (config_setting*) list_get(&config_settings, k);
 
                 int row2[] {0.65F * width, -0.05F * width, -1};
@@ -2408,13 +2408,13 @@ static void hud_settings_render(mu_Context* ctx, float scalex, float scaley) {
                         mu_textbox(ctx, (char*) a->value, a->max.i);
                         break;
                     case CONFIG_TYPE_INT:
-                        if(a->max.i == 1 && a->min.i == 0) {
+                        if (a->max.i == 1 && a->min.i == 0) {
                             mu_text(ctx, a->name);
                             mu_checkbox(ctx, "", (int*) a->value);
-                        } else if(a->defaults_length > 0) {
+                        } else if (a->defaults_length > 0) {
                             mu_text(ctx, a->name);
                             int_slider_defaults(ctx, a);
-                        } else if(a->max.i == INT_MAX) {
+                        } else if (a->max.i == INT_MAX) {
                             mu_text(ctx, a->name);
                             int_number(ctx, (int*) a->value);
                         } else {
@@ -2426,14 +2426,14 @@ static void hud_settings_render(mu_Context* ctx, float scalex, float scaley) {
                         mu_text(ctx, a->name);
                         if(a->max.i == INT_MAX) {
                             mu_number(ctx, (float*) a->value, 0.1F);
-                            *(float*)a->value = maxc(a->min.f, *(float*)a->value);
+                            *(float*) a->value = maxc(a->min.f, *(float*) a->value);
                         } else {
-                            mu_slider(ctx, (float*) a->value, a->min.i, a->max.i);
+                            mu_slider(ctx, (float*) a->value, a->min.f, a->max.f);
                         }
                         break;
                 }
 
-                if(*a->help) {
+                if (*a->help) {
                     mu_push_id(ctx, &a->value, sizeof(a->value));
                     if(mu_begin_popup(ctx, "Help")) {
                         int row3[] {ctx->text_width(ctx->style->font, a->help, 0)};
