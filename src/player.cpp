@@ -65,7 +65,7 @@ int player_intersection_type = -1;
 int player_intersection_player = 0;
 float player_intersection_dist = 1024.0F;
 
-struct Player players[PLAYERS_MAX];
+Player players[PLAYERS_MAX];
 
 #define FALL_DAMAGE_VELOCITY 0.58F
 #define FALL_SLOW_DOWN 0.24F
@@ -124,7 +124,7 @@ float* player_tool_func(const struct Player* p) {
             if(p->spade_use_type == 2 && t > 1.0F) {
                 return ret;
             }
-            if(p == &players[local_player_id] && camera_mode == CAMERAMODE_FPS) {
+            if(p == &players[local_player_id] && camera_mode == CameraMode::FPS) {
                 if(p->spade_use_type == 1) {
                     ret[0] = player_spade_func(t) * 90.0F;
                     return ret;
@@ -171,7 +171,7 @@ float* player_tool_func(const struct Player* p) {
 float* player_tool_translate_func(struct Player* p) {
     static float ret[3];
     ret[0] = ret[1] = ret[2] = 0.0F;
-    if(p == &players[local_player_id] && camera_mode == CAMERAMODE_FPS) {
+    if(p == &players[local_player_id] && camera_mode == CameraMode::FPS) {
         if(window_time() - p->item_showup < 0.5F) {
             return ret;
         }
@@ -623,7 +623,7 @@ void player_collision(const struct Player* p, Ray* ray, struct player_intersecti
 void player_render(struct Player* p, int id) {
     kv6_calclight(p->pos.x, p->pos.y, p->pos.z);
 
-    if(camera_mode == CAMERAMODE_SPECTATOR && p->team != TEAM_SPECTATOR && !cameracontroller_bodyview_mode) {
+    if(camera_mode == CameraMode::SPECTATOR && p->team != TEAM_SPECTATOR && !cameracontroller_bodyview_mode) {
         matrix_push(matrix_model);
         matrix_translate(matrix_model, p->pos.x, p->physics.eye.y + player_height(p) + 1.25F, p->pos.z);
         matrix_rotate(matrix_model, camera_rot_x / PI * 180.0F + 180.0F, 0.0F, 1.0F, 0.0F);
@@ -653,7 +653,7 @@ void player_render(struct Player* p, int id) {
     float oz = p->orientation_smooth.z / l;
 
     if(!p->alive) {
-        if(id != local_player_id || camera_mode != CAMERAMODE_DEATH) {
+        if(id != local_player_id || camera_mode != CameraMode::DEATH) {
             matrix_push(matrix_model);
             matrix_translate(matrix_model, p->pos.x, p->pos.y + 0.25F, p->pos.z);
             matrix_pointAt(matrix_model, ox, 0.0F, oz);
@@ -684,9 +684,9 @@ void player_render(struct Player* p, int id) {
     a /= 0.25F;
     b /= 0.25F;
 
-    int render_body = !((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR) && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
-    int render_headless = (id == local_player_id && camera_mode == CAMERAMODE_FPS)
-        || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
+    int render_body = !((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR) && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
+    int render_headless = (id == local_player_id && camera_mode == CameraMode::FPS)
+        || ((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)
             && cameracontroller_bodyview_mode && cameracontroller_bodyview_player == id);
 
     if(render_body) {
@@ -1007,7 +1007,7 @@ int player_move(struct Player* p, float fsynctics, int id) {
         return 0;
     }
 
-    int local = (id == local_player_id && camera_mode == CAMERAMODE_FPS);
+    int local = (id == local_player_id && camera_mode == CameraMode::FPS);
 
     player_coordsystem_adjust1(p);
     float f, f2;

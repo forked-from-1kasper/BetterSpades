@@ -285,7 +285,7 @@ void read_PacketStateData(void* data, int len) {
     players[local_player_id].block.green = 111;
     players[local_player_id].block.blue = 111;
 
-    camera_mode = CAMERAMODE_SELECTION;
+    camera_mode = CameraMode::SELECTION;
     screen_current = SCREEN_TEAM_SELECT;
     network_map_transfer = 0;
     chat_popup_duration = 0;
@@ -387,7 +387,7 @@ void read_PacketCreatePlayer(void* data, int len) {
                 camera_y = 63.0F - p->z;
                 camera_z = p->y;
             }
-            camera_mode = (p->team == TEAM_SPECTATOR) ? CAMERAMODE_SPECTATOR : CAMERAMODE_FPS;
+            camera_mode = (p->team == TEAM_SPECTATOR) ? CameraMode::SPECTATOR : CameraMode::FPS;
             camera_rot_x = (p->team == TEAM_1) ? 0.5F * PI : 1.5F * PI;
             camera_rot_y = 0.5F * PI;
             network_logged_in = 1;
@@ -448,7 +448,7 @@ void read_PacketMapStart(void* data, int len) {
     }
 
     player_init();
-    camera_mode = CAMERAMODE_SELECTION;
+    camera_mode = CameraMode::SELECTION;
 }
 
 void read_PacketWorldUpdate(void* data, int len) {

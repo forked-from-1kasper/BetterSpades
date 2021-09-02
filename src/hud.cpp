@@ -253,7 +253,7 @@ static void hud_ingame_render3D() {
 static void hud_ingame_keyboard(int key, int action, int mods, int internal);
 
 static int hud_ingame_onscreencontrol(int index, char* str, int activate) {
-    if(chat_input_mode == CHAT_NO_INPUT) {
+    if (chat_input_mode == CHAT_NO_INPUT) {
         if(show_exit) {
             switch(index) {
                 case 0:
@@ -274,8 +274,8 @@ static int hud_ingame_onscreencontrol(int index, char* str, int activate) {
                     return 1;
             }
         } else {
-            if(!network_connected || (network_connected && network_logged_in)) {
-                switch(index) {
+            if (!network_connected || (network_connected && network_logged_in)) {
+                switch (index) {
                     case 0:
                         if(str)
                             strcpy(str, "G-Chat");
@@ -373,9 +373,9 @@ static int hud_ingame_onscreencontrol(int index, char* str, int activate) {
 }
 
 static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
-    // window_mousemode(camera_mode==CAMERAMODE_SELECTION?WINDOW_CURSOR_ENABLED:WINDOW_CURSOR_DISABLED);
+    // window_mousemode(camera_mode==CameraMode::SELECTION?WINDOW_CURSOR_ENABLED:WINDOW_CURSOR_DISABLED);
     hud_active->render_localplayer = players[local_player_id].team != TEAM_SPECTATOR
-        && (screen_current == SCREEN_NONE || camera_mode != CAMERAMODE_FPS);
+        && (screen_current == SCREEN_NONE || camera_mode != CameraMode::FPS);
 
     if(window_key_down(WINDOW_KEY_NETWORKSTATS)) {
         if(network_map_transfer)
@@ -478,7 +478,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
             glColor3f(1.0F, 1.0F, 1.0F);
         }
 
-        if(window_key_down(WINDOW_KEY_TAB) || camera_mode == CAMERAMODE_SELECTION) {
+        if(window_key_down(WINDOW_KEY_TAB) || camera_mode == CameraMode::SELECTION) {
             if(network_connected && network_logged_in) {
                 char ping_str[16];
                 sprintf(ping_str, "PING: %ims", network_ping());
@@ -579,11 +579,11 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
             }
         }
 
-        int is_local = (camera_mode == CAMERAMODE_FPS) || (cameracontroller_bodyview_player == local_player_id);
-        int local_id = (camera_mode == CAMERAMODE_FPS) ? local_player_id : cameracontroller_bodyview_player;
+        int is_local = (camera_mode == CameraMode::FPS) || (cameracontroller_bodyview_player == local_player_id);
+        int local_id = (camera_mode == CameraMode::FPS) ? local_player_id : cameracontroller_bodyview_player;
 
-        if(camera_mode == CAMERAMODE_BODYVIEW
-           || (camera_mode == CAMERAMODE_SPECTATOR && cameracontroller_bodyview_mode)) {
+        if(camera_mode == CameraMode::BODYVIEW
+           || (camera_mode == CameraMode::SPECTATOR && cameracontroller_bodyview_mode)) {
             if(cameracontroller_bodyview_player != local_player_id) {
                 font_select(FONT_SMALLFNT);
                 switch(players[cameracontroller_bodyview_player].team) {
@@ -601,7 +601,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                 glColor3f(1.0F, 0.0F, 0.0F);
                 int cnt = local_player_respawn_time - (int)(window_time() - local_player_death_time);
                 char coin[16];
-                sprintf(coin, "INSERT COIN:%i", cnt);
+                sprintf(coin, "RESPAWN IN %i", cnt);
                 font_centered(settings.window_width / 2.0F,
                               53.0F * scalef * (cameracontroller_bodyview_mode ? 2.0F : 1.0F), 53.0F * scalef, coin);
                 if(local_player_respawn_cnt_last != cnt) {
@@ -614,8 +614,8 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
             glColor3f(1.0F, 1.0F, 1.0F);
         }
 
-        if(camera_mode == CAMERAMODE_FPS
-           || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
+        if(camera_mode == CameraMode::FPS
+           || ((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)
                && cameracontroller_bodyview_mode)) {
             glColor3f(1.0F, 1.0F, 1.0F);
 
@@ -697,7 +697,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
             }
         }
 
-        if(camera_mode != CAMERAMODE_SELECTION) {
+        if(camera_mode != CameraMode::SELECTION) {
             font_select(FONT_SMALLFNT);
 
             if(settings.chat_shadow) {
@@ -821,7 +821,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
         }
 
         // draw the minimap
-        if(camera_mode != CAMERAMODE_SELECTION) {
+        if(camera_mode != CameraMode::SELECTION) {
             glColor3f(1.0F, 1.0F, 1.0F);
             // large
             if(window_key_down(WINDOW_KEY_MAP)) {
@@ -906,7 +906,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                 for(int k = 0; k < PLAYERS_MAX; k++) {
                     if(players[k].connected && players[k].alive && k != local_player_id
                        && players[k].team != TEAM_SPECTATOR
-                       && (players[k].team == players[local_player_id].team || camera_mode == CAMERAMODE_SPECTATOR)) {
+                       && (players[k].team == players[local_player_id].team || camera_mode == CameraMode::SPECTATOR)) {
                         switch(players[k].team) {
                             case TEAM_1:
                                 glColor3ub(gamestate.team_1.red, gamestate.team_1.green, gamestate.team_1.blue);
@@ -1025,7 +1025,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                 for(int k = 0; k < PLAYERS_MAX; k++) {
                     if(players[k].connected && players[k].alive
                        && (players[k].team == players[local_player_id].team
-                           || (camera_mode == CAMERAMODE_SPECTATOR
+                           || (camera_mode == CameraMode::SPECTATOR
                                && (k == local_player_id || players[k].team != TEAM_SPECTATOR)))) {
                         if(k == local_player_id) {
                             glColor3ub(0, 255, 255);
@@ -1100,7 +1100,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
 }
 
 static void hud_ingame_scroll(double yoffset) {
-    if(camera_mode == CAMERAMODE_FPS && yoffset != 0.0F) {
+    if(camera_mode == CameraMode::FPS && yoffset != 0.0F) {
         int h = players[local_player_id].held_item;
         if(!players[local_player_id].items_show)
             local_player_lasttool = h;
@@ -1136,7 +1136,7 @@ static void hud_ingame_mouselocation(double x, double y) {
     last_y = y;
 
     float s = 1.0F;
-    if(camera_mode == CAMERAMODE_FPS && players[local_player_id].held_item == TOOL_GUN
+    if(camera_mode == CameraMode::FPS && players[local_player_id].held_item == TOOL_GUN
        && players[local_player_id].input.buttons.rmb) {
         s = 0.5F;
     }
@@ -1197,7 +1197,7 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
     if(button == WINDOW_MOUSE_MMB) {
         button_map[2] = (action == WINDOW_PRESS);
     }
-    if(camera_mode == CAMERAMODE_BODYVIEW && button == WINDOW_MOUSE_MMB && action == WINDOW_PRESS) {
+    if(camera_mode == CameraMode::BODYVIEW && button == WINDOW_MOUSE_MMB && action == WINDOW_PRESS) {
         float nearest_dist = FLT_MAX;
         int nearest_player = -1;
         for(int k = 0; k < PLAYERS_MAX; k++)
@@ -1213,8 +1213,8 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
     }
     if(button == WINDOW_MOUSE_RMB && action == WINDOW_PRESS) {
         players[local_player_id].input.buttons.rmb_start = window_time();
-        if(camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR) {
-            if(camera_mode == CAMERAMODE_SPECTATOR)
+        if(camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR) {
+            if(camera_mode == CameraMode::SPECTATOR)
                 cameracontroller_bodyview_mode = 1;
             for(int k = 0; k < PLAYERS_MAX * 2; k++) {
                 cameracontroller_bodyview_player = (cameracontroller_bodyview_player + 1) % PLAYERS_MAX;
@@ -1224,10 +1224,10 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
             cameracontroller_bodyview_zoom = 0.0F;
         }
     }
-    if(button == WINDOW_MOUSE_LMB) {
-        if(camera_mode == CAMERAMODE_FPS && window_time() - players[local_player_id].item_showup >= 0.5F) {
-            if(players[local_player_id].held_item == TOOL_GRENADE && local_player_grenades > 0) {
-                if(action == WINDOW_RELEASE) {
+    if (button == WINDOW_MOUSE_LMB) {
+        if (camera_mode == CameraMode::FPS && window_time() - players[local_player_id].item_showup >= 0.5F) {
+            if (players[local_player_id].held_item == TOOL_GRENADE && local_player_grenades > 0) {
+                if (action == WINDOW_RELEASE) {
                     local_player_grenades = maxc(local_player_grenades - 1, 0);
                     struct PacketGrenade g;
                     g.player_id = local_player_id;
@@ -1249,7 +1249,7 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
                     read_PacketGrenade(&g, sizeof(g)); // server won't loop packet back
                     players[local_player_id].item_showup = window_time();
                 }
-                if(action == WINDOW_PRESS) {
+                if (action == WINDOW_PRESS) {
                     sound_create(SOUND_LOCAL, &sound_grenade_pin, 0.0F, 0.0F, 0.0F);
                 }
             }
@@ -1258,7 +1258,7 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
     if(button == WINDOW_MOUSE_LMB && action == WINDOW_PRESS) {
         players[local_player_id].input.buttons.lmb_start = window_time();
 
-        if(camera_mode == CAMERAMODE_FPS) {
+        if(camera_mode == CameraMode::FPS) {
             if(players[local_player_id].held_item == TOOL_GUN) {
                 if(weapon_reloading()) {
                     weapon_reload_abort();
@@ -1270,8 +1270,8 @@ static void hud_ingame_mouseclick(double x, double y, int button, int action, in
             }
         }
 
-        if(camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR) {
-            if(camera_mode == CAMERAMODE_SPECTATOR)
+        if(camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR) {
+            if(camera_mode == CameraMode::SPECTATOR)
                 cameracontroller_bodyview_mode = 1;
             for(int k = 0; k < PLAYERS_MAX * 2; k++) {
                 cameracontroller_bodyview_player = (cameracontroller_bodyview_player - 1) % PLAYERS_MAX;
@@ -1361,19 +1361,39 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
     }
 
     if(chat_input_mode == CHAT_NO_INPUT) {
+        if (camera_mode == CameraMode::FPS && players[local_player_id].alive) {
+            switch (action) {
+                case WINDOW_RELEASE: {
+                    switch (key) {
+                        case WINDOW_KEY_CLOSE_LEFT_EYE: viewpoint = Viewpoint::RIGHT; break;
+                        case WINDOW_KEY_CLOSE_RIGHT_EYE: viewpoint = Viewpoint::LEFT; break;
+                    }
+                    break;
+                }
+
+                case WINDOW_PRESS: {
+                    switch (key) {
+                        case WINDOW_KEY_CLOSE_LEFT_EYE: case WINDOW_KEY_CLOSE_RIGHT_EYE:
+                            viewpoint = Viewpoint::CENTER; break;
+                    }
+                    break;
+                }
+            }
+        }
+
         if(action == WINDOW_PRESS) {
             if(!network_connected) {
                 if(key == WINDOW_KEY_F1) {
-                    camera_mode = CAMERAMODE_SELECTION;
+                    camera_mode = CameraMode::SELECTION;
                 }
                 if(key == WINDOW_KEY_F2) {
-                    camera_mode = CAMERAMODE_FPS;
+                    camera_mode = CameraMode::FPS;
                 }
                 if(key == WINDOW_KEY_F3) {
-                    camera_mode = CAMERAMODE_SPECTATOR;
+                    camera_mode = CameraMode::SPECTATOR;
                 }
                 if(key == WINDOW_KEY_F4) {
-                    camera_mode = CAMERAMODE_BODYVIEW;
+                    camera_mode = CameraMode::BODYVIEW;
                 }
                 if(key == WINDOW_KEY_SNEAK) {
                     log_debug("%f,%f,%f,%f,%f", camera_x, camera_y, camera_z, camera_rot_x, camera_rot_y);
@@ -1437,7 +1457,7 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
 
             if((key == WINDOW_KEY_CURSOR_UP || key == WINDOW_KEY_CURSOR_DOWN || key == WINDOW_KEY_CURSOR_LEFT
                 || key == WINDOW_KEY_CURSOR_RIGHT)
-               && camera_mode == CAMERAMODE_FPS && players[local_player_id].held_item == TOOL_BLOCK) {
+               && camera_mode == CameraMode::FPS && players[local_player_id].held_item == TOOL_BLOCK) {
                 int y;
                 for(y = 0; y < 8; y++) {
                     for(int x = 0; x < 8; x++) {
@@ -1477,16 +1497,16 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
                 }
             }
 
-            if(key == WINDOW_KEY_RELOAD && camera_mode == CAMERAMODE_FPS
+            if(key == WINDOW_KEY_RELOAD && camera_mode == CameraMode::FPS
                && players[local_player_id].held_item == TOOL_GUN) {
                 weapon_reload();
             }
 
-            if(key == WINDOW_KEY_SNEAK && (camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)) {
+            if(key == WINDOW_KEY_SNEAK && (camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)) {
                 cameracontroller_bodyview_mode = !cameracontroller_bodyview_mode;
             }
 
-            if(screen_current == SCREEN_NONE && camera_mode == CAMERAMODE_FPS) {
+            if(screen_current == SCREEN_NONE && camera_mode == CameraMode::FPS) {
                 unsigned char tool_switch = 0;
                 switch(key) {
                     case WINDOW_KEY_TOOL1:
@@ -1581,15 +1601,15 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
                     return;
                 }
             }
-            if(screen_current == SCREEN_GUN_SELECT) {
+            if (screen_current == SCREEN_GUN_SELECT) {
                 int new_gun = 255;
                 switch(key) {
                     case WINDOW_KEY_SELECT1: new_gun = WEAPON_RIFLE; break;
                     case WINDOW_KEY_SELECT2: new_gun = WEAPON_SMG; break;
                     case WINDOW_KEY_SELECT3: new_gun = WEAPON_SHOTGUN; break;
                 }
-                if(new_gun < 255) {
-                    if(network_logged_in) {
+                if (new_gun < 255) {
+                    if  (network_logged_in) {
                         struct PacketChangeWeapon p;
                         p.player_id = local_player_id;
                         p.weapon = new_gun;
@@ -1611,20 +1631,20 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
                     screen_current = SCREEN_NONE;
                     return;
                 }
-                if((key == WINDOW_KEY_CHANGEWEAPON || key == WINDOW_KEY_ESCAPE)
-                   && (!network_connected || (network_connected && network_logged_in))) {
+                if ((key == WINDOW_KEY_CHANGEWEAPON || key == WINDOW_KEY_ESCAPE)
+                    && (!network_connected || (network_connected && network_logged_in))) {
                     screen_current = SCREEN_NONE;
                     return;
                 }
             }
 
-            if(key == WINDOW_KEY_ESCAPE) {
+            if (key == WINDOW_KEY_ESCAPE) {
                 show_exit ^= 1;
                 window_mousemode(show_exit ? WINDOW_CURSOR_ENABLED : WINDOW_CURSOR_DISABLED);
                 return;
             }
 
-            if(key == WINDOW_KEY_PICKCOLOR && players[local_player_id].held_item == TOOL_BLOCK) {
+            if (key == WINDOW_KEY_PICKCOLOR && players[local_player_id].held_item == TOOL_BLOCK) {
                 players[local_player_id].item_disabled = window_time();
                 players[local_player_id].items_show_start = window_time();
                 players[local_player_id].items_show = 1;
@@ -1657,14 +1677,14 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
             }
         }
     } else {
-        if(action != WINDOW_RELEASE) {
-            if(key == WINDOW_KEY_V && mods) {
+        if (action != WINDOW_RELEASE) {
+            if (key == WINDOW_KEY_V && mods) {
                 const char* clipboard = window_clipboard();
-                if(clipboard)
+                if (clipboard)
                     strcat(chat[0][0], clipboard);
             }
-            if(key == WINDOW_KEY_ESCAPE || key == WINDOW_KEY_ENTER) {
-                if(key == WINDOW_KEY_ENTER && strlen(chat[0][0]) > 0) {
+            if (key == WINDOW_KEY_ESCAPE || key == WINDOW_KEY_ENTER) {
+                if (key == WINDOW_KEY_ENTER && strlen(chat[0][0]) > 0) {
                     struct PacketChatMessage msg;
                     msg.player_id = local_player_id;
                     msg.chat_type = (chat_input_mode == CHAT_ALL_INPUT) ? CHAT_ALL : CHAT_TEAM;
@@ -1675,9 +1695,9 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
                 window_textinput(0);
                 chat_input_mode = CHAT_NO_INPUT;
             }
-            if(key == WINDOW_KEY_BACKSPACE) {
+            if (key == WINDOW_KEY_BACKSPACE) {
                 size_t text_len = strlen(chat[0][0]);
-                if(text_len > 0) {
+                if (text_len > 0) {
                     chat[0][0][text_len - 1] = 0;
                 }
             }
@@ -1691,24 +1711,24 @@ static void hud_ingame_touch(void* finger, int action, float x, float y, float d
 
     if(action != TOUCH_MOVE) {
         int k = 0;
-        while(hud_ingame_onscreencontrol(k, NULL, -1)) {
-            if(is_inside_centered(f->start.x, settings.window_height - f->start.y,
-                                  settings.window_height * (0.2F + 0.175F * k), settings.window_height * 0.96F,
-                                  settings.window_height * 0.15F, settings.window_height * 0.1F)) {
+        while (hud_ingame_onscreencontrol(k, NULL, -1)) {
+            if (is_inside_centered(f->start.x, settings.window_height - f->start.y,
+                                   settings.window_height * (0.2F + 0.175F * k), settings.window_height * 0.96F,
+                                   settings.window_height * 0.15F, settings.window_height * 0.1F)) {
                 hud_ingame_onscreencontrol(k, NULL, (action == TOUCH_DOWN) ? 1 : 0);
                 return;
             }
             k++;
         }
-        if(is_inside_centered(f->start.x, settings.window_height - f->start.y,
-                              settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.6F,
-                              settings.window_height * 0.15F, settings.window_height * 0.1F)) {
+        if (is_inside_centered(f->start.x, settings.window_height - f->start.y,
+                               settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.6F,
+                               settings.window_height * 0.15F, settings.window_height * 0.1F)) {
             hud_ingame_onscreencontrol(64, NULL, (action == TOUCH_DOWN) ? 1 : 0);
             return;
         }
-        if(is_inside_centered(f->start.x, settings.window_height - f->start.y,
-                              settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.45F,
-                              settings.window_height * 0.15F, settings.window_height * 0.1F)) {
+        if (is_inside_centered(f->start.x, settings.window_height - f->start.y,
+                               settings.window_width - settings.window_height * 0.075F, settings.window_height * 0.45F,
+                               settings.window_height * 0.15F, settings.window_height * 0.1F)) {
             hud_ingame_onscreencontrol(65, NULL, (action == TOUCH_DOWN) ? 1 : 0);
             return;
         }
@@ -1738,7 +1758,7 @@ static void hud_ingame_touch(void* finger, int action, float x, float y, float d
             window_pressed_keys[WINDOW_KEY_MAP] = !window_pressed_keys[WINDOW_KEY_MAP];
             return;
         }
-        if((camera_mode == CAMERAMODE_FPS || camera_mode == CAMERAMODE_SPECTATOR)
+        if((camera_mode == CameraMode::FPS || camera_mode == CameraMode::SPECTATOR)
            && distance2D(f->start.x, f->start.y, settings.window_height * 0.3F, settings.window_height * 0.7F)
                < pow(settings.window_height * 0.15F, 2)) {
             float mx = maxc(minc(x - settings.window_height * 0.3F, settings.window_height * 0.2F),
@@ -1777,7 +1797,7 @@ static void hud_ingame_touch(void* finger, int action, float x, float y, float d
             }
             return;
         }
-        if(camera_mode == CAMERAMODE_BODYVIEW && action == TOUCH_UP) {
+        if(camera_mode == CameraMode::BODYVIEW && action == TOUCH_UP) {
             if(x < settings.window_width / 2)
                 hud_ingame_mouseclick(0, 0, WINDOW_MOUSE_LMB, WINDOW_PRESS, 0);
             if(x > settings.window_width / 2)
@@ -1933,7 +1953,7 @@ static void server_c(char* address, char* name) {
         map_vxl_load(data, file_size(address));
         free(data);
         chunk_rebuild_all();
-        camera_mode = CAMERAMODE_FPS;
+        camera_mode = CameraMode::FPS;
         players[local_player_id].pos.x = map_size_x / 2.0F;
         players[local_player_id].pos.y = map_size_y - 1.0F;
         players[local_player_id].pos.z = map_size_z / 2.0F;

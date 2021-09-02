@@ -29,7 +29,8 @@
 #include <camera.hpp>
 #include <config.hpp>
 
-enum camera_mode camera_mode = CAMERAMODE_SPECTATOR;
+Viewpoint viewpoint = Viewpoint::CENTER;
+CameraMode camera_mode = CameraMode::SPECTATOR;
 
 float frustum[6][4];
 float camera_rot_x = 2.04F, camera_rot_y = 1.79F;
@@ -42,10 +43,10 @@ float camera_movement_x = 0.0F, camera_movement_y = 0.0F, camera_movement_z = 0.
 float camera_speed = 32.0F;
 
 float camera_fov_scaled() {
-    int render_fpv = (camera_mode == CAMERAMODE_FPS)
-        || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
+    int render_fpv = (camera_mode == CameraMode::FPS)
+        || ((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)
             && cameracontroller_bodyview_mode);
-    int local_id = (camera_mode == CAMERAMODE_FPS) ? local_player_id : cameracontroller_bodyview_player;
+    int local_id = (camera_mode == CameraMode::FPS) ? local_player_id : cameracontroller_bodyview_player;
 
     if(render_fpv && players[local_id].held_item == TOOL_GUN && players[local_id].input.buttons.rmb
        && !players[local_id].input.keys.sprint && players[local_id].alive)
@@ -73,21 +74,21 @@ void camera_overflow_adjust() {
 
 void camera_apply() {
     switch(camera_mode) {
-        case CAMERAMODE_FPS: cameracontroller_fps_render(); break;
-        case CAMERAMODE_BODYVIEW: cameracontroller_bodyview_render(); break;
-        case CAMERAMODE_SPECTATOR: cameracontroller_spectator_render(); break;
-        case CAMERAMODE_SELECTION: cameracontroller_selection_render(); break;
-        case CAMERAMODE_DEATH: cameracontroller_death_render(); break;
+        case CameraMode::FPS: cameracontroller_fps_render(); break;
+        case CameraMode::BODYVIEW: cameracontroller_bodyview_render(); break;
+        case CameraMode::SPECTATOR: cameracontroller_spectator_render(); break;
+        case CameraMode::SELECTION: cameracontroller_selection_render(); break;
+        case CameraMode::DEATH: cameracontroller_death_render(); break;
     }
 }
 
 void camera_update(float dt) {
     switch(camera_mode) {
-        case CAMERAMODE_FPS: cameracontroller_fps(dt); break;
-        case CAMERAMODE_BODYVIEW: cameracontroller_bodyview(dt); break;
-        case CAMERAMODE_SPECTATOR: cameracontroller_spectator(dt); break;
-        case CAMERAMODE_SELECTION: cameracontroller_selection(dt); break;
-        case CAMERAMODE_DEATH: cameracontroller_death(dt); break;
+        case CameraMode::FPS: cameracontroller_fps(dt); break;
+        case CameraMode::BODYVIEW: cameracontroller_bodyview(dt); break;
+        case CameraMode::SPECTATOR: cameracontroller_spectator(dt); break;
+        case CameraMode::SELECTION: cameracontroller_selection(dt); break;
+        case CameraMode::DEATH: cameracontroller_death(dt); break;
     }
 }
 

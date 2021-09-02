@@ -34,7 +34,7 @@ float cameracontroller_bodyview_zoom = 0.0F;
 float cameracontroller_death_velocity_x, cameracontroller_death_velocity_y, cameracontroller_death_velocity_z;
 
 void cameracontroller_death_init(int player, float x, float y, float z) {
-    camera_mode = CAMERAMODE_DEATH;
+    camera_mode = CameraMode::DEATH;
     float len = len3D(camera_x - x, camera_y - y, camera_z - z);
     cameracontroller_death_velocity_x = (camera_x - x) / len * 3;
     cameracontroller_death_velocity_y = (camera_y - y) / len * 3;
@@ -64,7 +64,7 @@ void cameracontroller_death(float dt) {
         if(len3D(cameracontroller_death_velocity_x, cameracontroller_death_velocity_y,
                  cameracontroller_death_velocity_z)
            < 0.05F) {
-            camera_mode = CAMERAMODE_BODYVIEW;
+            camera_mode = CameraMode::BODYVIEW;
         }
     }
 }
@@ -179,19 +179,23 @@ void cameracontroller_fps(float dt) {
     camera_vz = players[local_player_id].physics.velocity.z;
 }
 
+#define EYES_DISTANCE 0.25
 void cameracontroller_fps_render() {
     auto lx = players[local_player_id].orientation_smooth.x;
     auto lz = players[local_player_id].orientation_smooth.z;
 
-    auto angle = atan2(lz, lx);
+    auto dir = atan2(lz, lx);
 
-    auto shift_x = 0.1;
-    auto shift_y = -0.25;
-    auto shift_z = 0.0; //0.125;
+    const auto shift_x = 0.1; const auto shift_y = -0.25; double shift_z;
+    switch (viewpoint) {
+        case Viewpoint::LEFT:   shift_z = -EYES_DISTANCE / 2.0; break;
+        case Viewpoint::CENTER: shift_z = 0.0;                  break;
+        case Viewpoint::RIGHT:  shift_z = EYES_DISTANCE / 2.0;  break;
+    }
 
-    auto x = camera_x + shift_x * cos(angle) - shift_z * sin(angle);
+    auto x = camera_x + shift_x * cos(dir) - shift_z * sin(dir);
     auto y = camera_y + shift_y;
-    auto z = camera_z + shift_x * sin(angle) + shift_z * cos(angle);
+    auto z = camera_z + shift_x * sin(dir) + shift_z * cos(dir);
 
     matrix_lookAt(matrix_view, x, y, z, x + sin(camera_rot_x) * sin(camera_rot_y),
                   y + cos(camera_rot_y), z + cos(camera_rot_x) * sin(camera_rot_y),

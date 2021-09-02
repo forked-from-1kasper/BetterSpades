@@ -106,7 +106,7 @@ struct Orientation {
     float x, y, z;
 };
 
-extern struct Player {
+struct Player {
     char name[17];
     Position pos;
     Orientation orientation;
@@ -164,7 +164,9 @@ extern struct Player {
         char feet_cylce;
         float tool_started;
     } sound;
-} players[PLAYERS_MAX];
+};
+
+extern Player players[PLAYERS_MAX];
 // pyspades/pysnip/piqueserver sometimes uses ids that are out of range
 
 int player_can_spectate(struct Player* p);

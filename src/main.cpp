@@ -204,16 +204,16 @@ void display() {
             glx_enable_sphericalfog();
             drawScene();
 
-            int render_fpv = (camera_mode == CAMERAMODE_FPS)
-                || ((camera_mode == CAMERAMODE_BODYVIEW || camera_mode == CAMERAMODE_SPECTATOR)
+            int render_fpv = (camera_mode == CameraMode::FPS)
+                || ((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)
                     && cameracontroller_bodyview_mode);
-            int is_local = (camera_mode == CAMERAMODE_FPS) || (cameracontroller_bodyview_player == local_player_id);
-            int local_id = (camera_mode == CAMERAMODE_FPS) ? local_player_id : cameracontroller_bodyview_player;
+            int is_local = (camera_mode == CameraMode::FPS) || (cameracontroller_bodyview_player == local_player_id);
+            int local_id = (camera_mode == CameraMode::FPS) ? local_player_id : cameracontroller_bodyview_player;
 
             if(players[local_player_id].items_show && window_time() - players[local_player_id].items_show_start >= 0.5F)
                 players[local_player_id].items_show = 0;
 
-            if(camera_mode == CAMERAMODE_FPS) {
+            if(camera_mode == CameraMode::FPS) {
                 weapon_update();
                 if(players[local_player_id].input.buttons.lmb && players[local_player_id].held_item == TOOL_BLOCK
                    && (window_time() - players[local_player_id].item_showup) >= 0.5F && local_player_blocks > 0) {
@@ -336,7 +336,7 @@ void display() {
             if(hud_active->render_localplayer) {
                 float tmp2 = players[local_player_id].physics.eye.y;
                 players[local_player_id].physics.eye.y = last_cy;
-                if(camera_mode == CAMERAMODE_FPS)
+                if(camera_mode == CameraMode::FPS)
                     glDepthRange(0.0F, 0.05F);
                 matrix_push(matrix_projection);
                 matrix_translate(matrix_projection, 0.0F, -0.25F, 0.0F);

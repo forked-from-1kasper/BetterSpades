@@ -19,18 +19,19 @@
     along with BetterSpades.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-enum camera_mode {
-    CAMERAMODE_SELECTION,
-    CAMERAMODE_FPS,
-    CAMERAMODE_SPECTATOR,
-    CAMERAMODE_BODYVIEW,
-    CAMERAMODE_DEATH,
+enum class CameraMode {
+    SELECTION, FPS, SPECTATOR, BODYVIEW, DEATH
+};
+
+enum class Viewpoint {
+    LEFT, CENTER, RIGHT
 };
 
 #define CAMERA_DEFAULT_FOV 70.0F
 #define CAMERA_MAX_FOV 100.0F
 
-extern enum camera_mode camera_mode;
+extern CameraMode camera_mode;
+extern Viewpoint viewpoint;
 
 extern float frustum[6][4];
 extern float camera_rot_x, camera_rot_y;
