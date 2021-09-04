@@ -70,7 +70,7 @@ int texture_flag_index(const char* country);
 void texture_flag_offset(int index, float* u, float* v);
 void texture_filter(struct texture* t, int filter);
 void texture_init(void);
-int texture_create(struct texture* t, char* filename);
+int texture_create(struct texture* t, const char* filename);
 int texture_create_buffer(struct texture* t, int width, int height, unsigned char* buff, int dest);
 void texture_delete(struct texture* t);
 void texture_draw(struct texture* t, float x, float y, float w, float h);

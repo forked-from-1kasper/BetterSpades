@@ -31,4 +31,4 @@ float buffer_readf(unsigned char* buffer, int index);
 unsigned int buffer_read32(unsigned char* buffer, int index);
 unsigned short buffer_read16(unsigned char* buffer, int index);
 unsigned char buffer_read8(unsigned char* buffer, int index);
-void file_url(char* url);
+void file_url(const char* url);

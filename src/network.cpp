@@ -83,7 +83,7 @@ const char* network_reason_disconnect(int code) {
 }
 
 static void printJoinMsg(int team, char* name) {
-    char* t;
+    const char* t;
     switch(team) {
         case TEAM_1: t = gamestate.team_1.name; break;
         case TEAM_2: t = gamestate.team_2.name; break;
@@ -573,8 +573,7 @@ void read_PacketKillAction(void* data, int len) {
         if(p->player_id != p->killer_id) {
             players[p->killer_id].score++;
         }
-        char* gun_name[3] = {"Rifle", "SMG", "Shotgun"};
-        char m[256];
+        const char* gun_name[3] = {"Rifle", "SMG", "Shotgun"}; char m[256];
         switch(p->kill_type) {
             case KILLTYPE_WEAPON:
                 sprintf(m, "%s killed %s (%s)", players[p->killer_id].name, players[p->player_id].name,
@@ -833,15 +832,15 @@ void read_PacketVersionGet(void* data, int len) {
     ver.revision = BETTERSPADES_PATCH;
 
 #ifdef OS_WINDOWS
-    char* os = "BetterSpades (Windows) " GIT_COMMIT_HASH;
+    const char* os = "BetterSpades (Windows) " GIT_COMMIT_HASH;
 #endif
 
 #ifdef OS_LINUX
-    char* os = "BetterSpades (Linux) " GIT_COMMIT_HASH;
+    const char* os = "BetterSpades (Linux) " GIT_COMMIT_HASH;
 #endif
 
 #ifdef OS_APPLE
-    char* os = "BetterSpades (Apple) " GIT_COMMIT_HASH;
+    const char* os = "BetterSpades (Apple) " GIT_COMMIT_HASH;
 #endif
 
     strcpy(ver.operatingsystem, os);

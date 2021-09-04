@@ -211,7 +211,7 @@ void sound_update() {
 #endif
 }
 
-void sound_load(struct Sound_wav* wav, char* name, float min, float max) {
+void sound_load(struct Sound_wav* wav, const char* name, float min, float max) {
 #ifdef USE_SOUND
     if(!sound_enabled)
         return;

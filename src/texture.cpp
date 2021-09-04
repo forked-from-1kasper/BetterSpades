@@ -65,7 +65,7 @@ struct texture texture_ui_alert;
 struct texture texture_ui_joystick;
 struct texture texture_ui_knob;
 
-static char* texture_flags[251]
+static const char* texture_flags[251]
     = {"AD",  "AE", "AF", "AG", "AI", "AL", "AM", "AN", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA",
        "BB",  "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BR", "BS", "BT", "BV", "BW", "BY",
        "BZ",  "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CS", "CU", "CV", "CX",
@@ -82,11 +82,11 @@ static char* texture_flags[251]
        "UZ",  "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "XT", "YE", "YT", "YU", "ZA", "ZM", "ZW"};
 
 static int texture_flag_cmp(const void* a, const void* b) {
-    return strcmp((const char*) a, *(const char* const*)b);
+    return strcmp((const char*) a, *(const char* const*) b);
 }
 
 int texture_flag_index(const char* country) {
-    auto res = (char**) bsearch(country, texture_flags, sizeof(texture_flags) / sizeof(texture_flags[0]), sizeof(char*), texture_flag_cmp);
+    auto res = (const char**) bsearch(country, texture_flags, sizeof(texture_flags) / sizeof(texture_flags[0]), sizeof(char*), texture_flag_cmp);
     return res ? (res - texture_flags) : -1;
 }
 
@@ -115,15 +115,15 @@ void texture_filter(struct texture* t, int filter) {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-int texture_create(struct texture* t, char* filename) {
+int texture_create(struct texture* t, const char* filename) {
     int sz = file_size(filename);
     void* data = file_load(filename);
     int error = lodepng_decode32(&t->pixels, (unsigned int*) &t->width, (unsigned int*) &t->height, (const unsigned char*) data, sz);
     free(data);
 
-    if(error) {
+    if (error) {
         log_warn("Could not load texture (%u): %s", error, lodepng_error_text(error));
-        return 0;
+        return -1;
     }
 
     texture_resize_pow2(t, 0);
@@ -136,6 +136,8 @@ int texture_create(struct texture* t, char* filename) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return 0;
 }
 
 int texture_create_buffer(struct texture* t, int width, int height, unsigned char* buff, int is_new) {
@@ -152,6 +154,8 @@ int texture_create_buffer(struct texture* t, int width, int height, unsigned cha
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return 0;
 }
 
 void texture_delete(struct texture* t) {

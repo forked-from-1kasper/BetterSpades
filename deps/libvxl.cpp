@@ -104,7 +104,7 @@ bool libvxl_size(size_t* size, size_t* depth, const void* data, size_t len) {
     size_t columns = 0;
     *depth = 0;
     while(offset + sizeof(struct libvxl_span) - 1 < len) {
-        struct libvxl_span* desc = (struct libvxl_span*)(data + offset);
+        auto desc = (libvxl_span*) (data + offset);
         if(desc->color_end + 1 > (int)*depth)
             *depth = desc->color_end + 1;
         if(!desc->length)
@@ -157,7 +157,7 @@ bool libvxl_create(struct libvxl_map* map, size_t w, size_t h, size_t d,
             while(1) {
                 if(offset + sizeof(struct libvxl_span) - 1 >= len)
                     return false;
-                struct libvxl_span* desc = (struct libvxl_span*)(data + offset);
+                auto desc = (libvxl_span*)(data + offset);
                 if(offset + libvxl_span_length(desc) - 1 >= len)
                     return false;
                 uint32_t* color_data

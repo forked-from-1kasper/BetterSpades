@@ -1058,8 +1058,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
            && (players[local_player_id].team == TEAM_SPECTATOR
                || players[player_intersection_player].team == players[local_player_id].team)) {
             font_select(FONT_SMALLFNT);
-            char* th[4] = {"torso", "head", "arms", "legs"};
-            char str[32];
+            const char* th[4] = {"torso", "head", "arms", "legs"}; char str[32];
             switch(players[player_intersection_player].team) {
                 case TEAM_1: glColor3ub(gamestate.team_1.red, gamestate.team_1.green, gamestate.team_1.blue); break;
                 case TEAM_2: glColor3ub(gamestate.team_2.red, gamestate.team_2.green, gamestate.team_2.blue); break;

@@ -39,7 +39,7 @@ enum {
     FILE_SDL,
 };
 
-void file_url(char* url) {
+void file_url(const char* url) {
     char cmd[strlen(url) + 16];
 #ifdef OS_WINDOWS
     sprintf(cmd, "start %s", url);

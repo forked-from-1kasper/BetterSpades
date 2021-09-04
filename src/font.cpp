@@ -123,23 +123,22 @@ static font_backed_data* font_find(float h) {
     return (font_backed_data*) ht_lookup(&fonts_backed, &id);
 }
 
-float font_length(float h, char* text) {
-    struct font_backed_data* font = font_find(h);
+float font_length(float h, const char* text) {
+    font_backed_data* font = font_find(h);
 
-    if(!font)
-        return 0.0F;
+    if (!font) return 0.0F;
 
     stbtt_aligned_quad q;
     float y = h * 0.75F;
     float x = 0.0F;
     float length = 0.0F;
-    for(size_t k = 0; k < strlen(text); k++) {
+    for (size_t k = 0; k < strlen(text); k++) {
         if(text[k] == '\n') {
             length = fmax(length, x);
             x = 0.0F;
         }
 
-        if(text[k] >= FONT_BAKE_START)
+        if (text[k] >= FONT_BAKE_START)
             stbtt_GetBakedQuad(font->cdata, font->w, font->h, text[k] - FONT_BAKE_START, &x, &y, &q, 1);
     }
 
@@ -159,7 +158,7 @@ void font_reset() {
     ht_iterate_remove(&fonts_backed, NULL, font_remove_callback);
 }
 
-void font_render(float x, float y, float h, char* text) {
+void font_render(float x, float y, float h, const char* text) {
     struct font_backed_data* font = font_find(h);
 
     if(!font)
@@ -241,6 +240,6 @@ void font_render(float x, float y, float h, char* text) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-void font_centered(float x, float y, float h, char* text) {
+void font_centered(float x, float y, float h, const char* text) {
     font_render(x - font_length(h, text) / 2.0F, y, h, text);
 }

@@ -21,7 +21,7 @@ OPTS += -DBETTERSPADES_VERSION=\"v$(BETTERSPADES_MAJOR).$(BETTERSPADES_MINOR).$(
 OPTS += -DGIT_COMMIT_HASH=\"$(shell git rev-parse HEAD)\"
 OPTS += -DUSE_SOUND
 
-CFLAGS  = -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
+CFLAGS  = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 LDFLAGS = -lopenal -lcglm -lglfw -lGLEW -lGLU -lGL -lenet -ldeflate -lpthread
 
 HEADERS  = src/common.hpp src/model_normals.hpp

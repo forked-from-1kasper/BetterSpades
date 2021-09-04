@@ -58,7 +58,7 @@ struct kv6_t model_semi_casing;
 struct kv6_t model_smg_casing;
 struct kv6_t model_shotgun_casing;
 
-static void kv6_load_file(struct kv6_t* kv6, char* filename, float scale) {
+static void kv6_load_file(struct kv6_t* kv6, const char* filename, float scale) {
     void* data = file_load(filename);
     kv6_load(kv6, data, scale);
     free(data);
