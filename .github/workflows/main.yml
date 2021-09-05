@@ -1,0 +1,29 @@
+name: BetterSpades
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Resolve dependencies
+        run: sudo apt-get install libopenal-dev libopengl-dev libglew-dev libglfw3-dev libdeflate-dev libenet-dev
+
+      - name: Install cglm
+        run: |
+          git clone https://github.com/recp/cglm
+          mkdir cglm/build
+          cd cglm/build
+          cmake ..
+          make
+          sudo make install
+          cd ../..
+
+      - name: Compile
+        run: make
