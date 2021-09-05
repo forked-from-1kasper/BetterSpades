@@ -28,6 +28,12 @@ jobs:
       - name: Compile
         run: make binary
 
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Linux binary release
+          path: build/betterspades
+
   macos-build:
     runs-on: macos-latest
 
@@ -40,3 +46,9 @@ jobs:
 
       - name: Compile
         run: make binary
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: macOS binary release
+          path: build/betterspades
