@@ -27,7 +27,6 @@
 #include <ping.hpp>
 #include <common.hpp>
 #include <parson.hpp>
-#include <list.hpp>
 #include <hud.hpp>
 #include <channel.hpp>
 #include <hashtable.hpp>

@@ -29,7 +29,6 @@
 #include <main.hpp>
 #include <file.hpp>
 #include <common.hpp>
-#include <list.hpp>
 #include <matrix.hpp>
 #include <texture.hpp>
 #include <hud.hpp>
@@ -2415,49 +2414,47 @@ static void hud_settings_render(mu_Context* ctx, float scalex, float scaley) {
         if(mu_header_ex(ctx, "All settings", MU_OPT_EXPANDED)) {
             int width = mu_get_current_container(ctx)->body.w;
 
-            for (int k = 0; k < list_size(&config_settings); k++) {
-                auto a = (config_setting*) list_get(&config_settings, k);
-
+            for (auto & a: config_settings) {
                 int row2[] {0.65F * width, -0.05F * width, -1};
                 mu_layout_row(ctx, 3, (int*) &row2, 0);
 
-                switch(a->type) {
+                switch (a.type) {
                     case CONFIG_TYPE_STRING:
-                        mu_text(ctx, a->name);
-                        mu_textbox(ctx, (char*) a->value, a->max.i);
+                        mu_text(ctx, a.name);
+                        mu_textbox(ctx, (char*) a.value, a.max.i);
                         break;
                     case CONFIG_TYPE_INT:
-                        if (a->max.i == 1 && a->min.i == 0) {
-                            mu_text(ctx, a->name);
-                            mu_checkbox(ctx, "", (int*) a->value);
-                        } else if (a->defaults_length > 0) {
-                            mu_text(ctx, a->name);
-                            int_slider_defaults(ctx, a);
-                        } else if (a->max.i == INT_MAX) {
-                            mu_text(ctx, a->name);
-                            int_number(ctx, (int*) a->value);
+                        if (a.max.i == 1 && a.min.i == 0) {
+                            mu_text(ctx, a.name);
+                            mu_checkbox(ctx, "", (int*) a.value);
+                        } else if (a.defaults_length > 0) {
+                            mu_text(ctx, a.name);
+                            int_slider_defaults(ctx, &a);
+                        } else if (a.max.i == INT_MAX) {
+                            mu_text(ctx, a.name);
+                            int_number(ctx, (int*) a.value);
                         } else {
-                            mu_text(ctx, a->name);
-                            int_slider(ctx, (int*) a->value, a->min.i, a->max.i);
+                            mu_text(ctx, a.name);
+                            int_slider(ctx, (int*) a.value, a.min.i, a.max.i);
                         }
                         break;
                     case CONFIG_TYPE_FLOAT:
-                        mu_text(ctx, a->name);
-                        if(a->max.i == INT_MAX) {
-                            mu_number(ctx, (float*) a->value, 0.1F);
-                            *(float*) a->value = maxc(a->min.f, *(float*) a->value);
+                        mu_text(ctx, a.name);
+                        if(a.max.i == INT_MAX) {
+                            mu_number(ctx, (float*) a.value, 0.1F);
+                            *(float*) a.value = maxc(a.min.f, *(float*) a.value);
                         } else {
-                            mu_slider(ctx, (float*) a->value, a->min.f, a->max.f);
+                            mu_slider(ctx, (float*) a.value, a.min.f, a.max.f);
                         }
                         break;
                 }
 
-                if (*a->help) {
-                    mu_push_id(ctx, &a->value, sizeof(a->value));
+                if (*a.help) {
+                    mu_push_id(ctx, &a.value, sizeof(a.value));
                     if(mu_begin_popup(ctx, "Help")) {
-                        int row3[] {ctx->text_width(ctx->style->font, a->help, 0)};
+                        int row3[] {ctx->text_width(ctx->style->font, a.help, 0)};
                         mu_layout_row(ctx, 1, (int*) &row3, 0);
-                        mu_text(ctx, a->help);
+                        mu_text(ctx, a.help);
                         mu_end_popup(ctx);
                     }
 
@@ -2556,19 +2553,18 @@ static void hud_controls_render(mu_Context* ctx, float scalex, float scaley) {
 
         char* category = NULL;
         int open = 0;
-        for (int k = 0; k < list_size(&config_keys); k++) {
-            auto a = (config_key_pair*) list_get(&config_keys, k);
 
-            if (*a->display) {
-                if (!category || strcmp(category, a->category)) {
-                    category = a->category;
+        for (auto & a: config_keys) {
+            if (*a.display) {
+                if (!category || strcmp(category, a.category)) {
+                    category = a.category;
 
-                    open = mu_header_ex(ctx, a->category, MU_OPT_EXPANDED);
+                    open = mu_header_ex(ctx, a.category, MU_OPT_EXPANDED);
                 }
 
                 if (open) {
                     int width = mu_get_current_container(ctx)->body.w;
-                    if (a->def != a->original) {
+                    if (a.def != a.original) {
                         int row2[] {0.65F * width, ctx->text_width(ctx->style->font, "Reset", 0) * 1.5F, -0.05F * width, -1};
                         mu_layout_row(ctx, 4, (int*) &row2, 0);
                     } else {
@@ -2576,29 +2572,29 @@ static void hud_controls_render(mu_Context* ctx, float scalex, float scaley) {
                         mu_layout_row(ctx, 3, (int*) &row3, 0);
                     }
 
-                    mu_push_id(ctx, a->display, sizeof(a->display));
-                    mu_text(ctx, a->display);
+                    mu_push_id(ctx, a.display, sizeof(a.display));
+                    mu_text(ctx, a.display);
 
-                    if (a->def != a->original && mu_button(ctx, "Reset")) {
-                        a->def = a->original;
+                    if (a.def != a.original && mu_button(ctx, "Reset")) {
+                        a.def = a.original;
                         config_save();
                     }
 
                     char name[32];
-                    window_keyname(a->def, name, sizeof(name));
+                    window_keyname(a.def, name, sizeof(name));
 
-                    if (hud_controls_edit == a)
+                    if (hud_controls_edit == &a)
                         mu_text_color(ctx, 255, 0, 0);
                     if (mu_button(ctx, name))
-                        hud_controls_edit = (hud_controls_edit == a) ? NULL : a;
+                        hud_controls_edit = (hud_controls_edit == &a) ? NULL : &a;
                     mu_text_color_default(ctx);
                     mu_pop_id(ctx);
 
-                    mu_push_id(ctx, a->name, sizeof(a->name));
+                    mu_push_id(ctx, a.name, sizeof(a.name));
                     if (mu_begin_popup(ctx, "Help")) {
-                        int row4[] {ctx->text_width(ctx->style->font, a->name, 0)};
+                        int row4[] {ctx->text_width(ctx->style->font, a.name, 0)};
                         mu_layout_row(ctx, 1, (int*) &row4, 0);
-                        mu_text(ctx, a->name);
+                        mu_text(ctx, a.name);
                         mu_end_popup(ctx);
                     }
 

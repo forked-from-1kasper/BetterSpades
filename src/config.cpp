@@ -33,24 +33,24 @@
 #include <camera.hpp>
 
 struct RENDER_OPTIONS settings, settings_tmp;
-struct list config_keys;
-struct list config_settings;
 
-struct list config_file;
+std::vector<config_key_pair>   config_keys;
+std::vector<config_file_entry> config_file;
+std::vector<config_setting>    config_settings;
 
 static void config_sets(const char* section, const char* name, const char* value) {
-    for(int k = 0; k < list_size(&config_file); k++) {
-        auto e = (config_file_entry*) list_get(&config_file, k);
-        if(strcmp(e->name, name) == 0) {
-            strncpy(e->value, value, sizeof(e->value) - 1);
+    for (auto & e: config_file) {
+        if (strcmp(e.name, name) == 0) {
+            strncpy(e.value, value, sizeof(e.value) - 1);
             return;
         }
     }
-    struct config_file_entry e;
+
+    config_file_entry e;
     strncpy(e.section, section, sizeof(e.section) - 1);
     strncpy(e.name, name, sizeof(e.name) - 1);
     strncpy(e.value, value, sizeof(e.value) - 1);
-    list_add(&config_file, &e);
+    config_file.push_back(e);
 }
 
 static void config_seti(const char* section, const char* name, int value) {
@@ -86,25 +86,22 @@ void config_save() {
     config_seti("client", "hold_down_sights", settings.hold_down_sights);
     config_seti("client", "chat_shadow", settings.chat_shadow);
 
-    for(int k = 0; k < list_size(&config_keys); k++) {
-        auto e = (config_key_pair*) list_get(&config_keys, k);
-        if(strlen(e->name) > 0)
-            config_seti("controls", e->name, e->def);
-    }
+    for (const auto & key: config_keys)
+        if (strlen(key.name) > 0)
+            config_seti("controls", key.name, key.def);
 
     void* f = file_open("config.ini", "w");
-    if(f) {
+    if (f) {
         char last_section[32] = {0};
-        for(int k = 0; k < list_size(&config_file); k++) {
-            auto e = (config_file_entry*) list_get(&config_file, k);
-            if(strcmp(e->section, last_section) != 0) {
-                file_printf(f, "\r\n[%s]\r\n", e->section);
-                strcpy(last_section, e->section);
+        for (const auto & e: config_file) {
+            if (strcmp(e.section, last_section) != 0) {
+                file_printf(f, "\r\n[%s]\r\n", e.section);
+                strcpy(last_section, e.section);
             }
-            file_printf(f, "%s", e->name);
-            for(int l = 0; l < 31 - strlen(e->name); l++)
+            file_printf(f, "%s", e.name);
+            for (int l = 0; l < 31 - strlen(e.name); l++)
                 file_printf(f, " ");
-            file_printf(f, "= %s\r\n", e->value);
+            file_printf(f, "= %s\r\n", e.value);
         }
         file_close(f);
     }
@@ -115,7 +112,7 @@ static int config_read_key(void* user, const char* section, const char* name, co
     strncpy(e.section, section, sizeof(e.section) - 1);
     strncpy(e.name, name, sizeof(e.name) - 1);
     strncpy(e.value, value, sizeof(e.value) - 1);
-    list_add(&config_file, &e);
+    config_file.push_back(e);
 
     if(!strcmp(section, "client")) {
         if(!strcmp(name, "name")) {
@@ -156,11 +153,10 @@ static int config_read_key(void* user, const char* section, const char* name, co
         }
     }
     if(!strcmp(section, "controls")) {
-        for(int k = 0; k < list_size(&config_keys); k++) {
-            auto key = (config_key_pair*) list_get(&config_keys, k);
-            if(!strcmp(name, key->name)) {
-                log_debug("found override for %s, from %i to %i", key->name, key->def, atoi(value));
-                key->def = strtol(value, NULL, 0);
+        for (auto & key: config_keys) {
+            if (!strcmp(name, key.name)) {
+                log_debug("found override for %s, from %i to %i", key.name, key.def, atoi(value));
+                key.def = strtol(value, NULL, 0);
                 break;
             }
         }
@@ -170,41 +166,35 @@ static int config_read_key(void* user, const char* section, const char* name, co
 
 void config_register_key(int internal, int def, const char* name, int toggle, const char* display,
                          const char* category) {
-    struct config_key_pair key;
+    config_key_pair key;
     key.internal = internal;
     key.def = def;
     key.original = def;
     key.toggle = toggle;
-    if(display)
-        strncpy(key.display, display, sizeof(key.display) - 1);
-    else
-        *key.display = 0;
 
-    if(name)
-        strncpy(key.name, name, sizeof(key.name) - 1);
-    else
-        *key.name = 0;
+    if (display) strncpy(key.display, display, sizeof(key.display) - 1);
+    else *key.display = 0;
 
-    if(category)
-        strncpy(key.category, category, sizeof(key.category) - 1);
-    else
-        *key.category = 0;
-    list_add(&config_keys, &key);
+    if (name) strncpy(key.name, name, sizeof(key.name) - 1);
+    else *key.name = 0;
+
+    if (category) strncpy(key.category, category, sizeof(key.category) - 1);
+    else *key.category = 0;
+
+    config_keys.push_back(key);
 }
 
 int config_key_translate(int key, int dir, int* results) {
     int count = 0;
 
-    for(int k = 0; k < list_size(&config_keys); k++) {
-        auto a = (config_key_pair*) list_get(&config_keys, k);
-
-        if(dir && a->internal == key) {
-            if(results)
-                results[count] = a->def;
+    for (const auto & a: config_keys) {
+        if (dir && a.internal == key) {
+            if (results)
+                results[count] = a.def;
             count++;
-        } else if(!dir && a->def == key) {
-            if(results)
-                results[count] = a->internal;
+        } else if (!dir && a.def == key) {
+            if (results)
+                results[count] = a.internal;
             count++;
         }
     }
@@ -213,28 +203,22 @@ int config_key_translate(int key, int dir, int* results) {
 }
 
 struct config_key_pair* config_key(int key) {
-    for(int k = 0; k < list_size(&config_keys); k++) {
-        auto a = (config_key_pair*) list_get(&config_keys, k);
-        if(a->internal == key)
-            return a;
-    }
+    for (auto & a: config_keys)
+        if (a.internal == key)
+            return &a;
+
     return NULL;
 }
 
 void config_key_reset_togglestates() {
-    for(int k = 0; k < list_size(&config_keys); k++) {
-        auto a = (config_key_pair*) list_get(&config_keys, k);
-        if(a->toggle)
-            window_pressed_keys[a->internal] = 0;
-    }
+    for (const auto & a: config_keys) if (a.toggle)
+        window_pressed_keys[a.internal] = 0;
 }
 
-static int config_key_cmp(const void* a, const void* b) {
-    auto A = (const struct config_key_pair*) a;
-    auto B = (const struct config_key_pair*) b;
 
-    int cmp = strcmp(A->category, B->category);
-    return cmp ? cmp : strcmp(A->display, B->display);
+static bool operator<(const config_key_pair & A, const config_key_pair & B) {
+    int cmp = strcmp(A.category, B.category);
+    return cmp ? (cmp < 0) : (strcmp(A.display, B.display) < 0);
 }
 
 static void config_label_pixels(char* buffer, size_t length, int value, size_t index) {
@@ -246,9 +230,9 @@ static void config_label_pixels(char* buffer, size_t length, int value, size_t i
 }
 
 static void config_label_vsync(char* buffer, size_t length, int value, size_t index) {
-    if(value == 0) {
+    if (value == 0) {
         snprintf(buffer, length, "disabled");
-    } else if(value == 1) {
+    } else if (value == 1) {
         snprintf(buffer, length, "enabled");
     } else {
         snprintf(buffer, length, "max %i fps", value);
@@ -264,15 +248,9 @@ static void config_label_msaa(char* buffer, size_t length, int value, size_t ind
 }
 
 void config_reload() {
-    if(!list_created(&config_file))
-        list_create(&config_file, sizeof(struct config_file_entry));
-    else
-        list_clear(&config_file);
-
-    if(!list_created(&config_keys))
-        list_create(&config_keys, sizeof(struct config_key_pair));
-    else
-        list_clear(&config_keys);
+    config_file.clear();
+    config_keys.clear();
+    config_settings.clear();
 
     config_register_key(WINDOW_KEY_UP, GLFW_KEY_W, "move_forward", 0, "Forward", "Movement");
     config_register_key(WINDOW_KEY_DOWN, GLFW_KEY_S, "move_backward", 0, "Backward", "Movement");
@@ -324,18 +302,13 @@ void config_reload() {
     config_register_key(WINDOW_KEY_SELECT2, GLFW_KEY_2, NULL, 0, NULL, NULL);
     config_register_key(WINDOW_KEY_SELECT3, GLFW_KEY_3, NULL, 0, NULL, NULL);
 
-    list_sort(&config_keys, config_key_cmp);
+    std::sort(config_keys.begin(), config_keys.end());
 
     auto s = (const char*) file_load("config.ini");
-    if(s) {
+    if (s) {
         ini_parse_string(s, config_read_key, NULL);
         free((void*) s);
     }
-
-    if(!list_created(&config_settings))
-        list_create(&config_settings, sizeof(struct config_setting));
-    else
-        list_clear(&config_settings);
 
     config_setting player_name {
         settings_tmp.name,
@@ -450,21 +423,21 @@ void config_reload() {
         "Invert y", "Invert vertical mouse movement",
     };
 
-    list_add(&config_settings, &player_name);
-    list_add(&config_settings, &mouse_sensitivity);
-    list_add(&config_settings, &camera_fov);
-    list_add(&config_settings, &volume);
-    list_add(&config_settings, &window_width);
-    list_add(&config_settings, &window_height);
-    list_add(&config_settings, &vsync);
-    list_add(&config_settings, &fullscreen);
-    list_add(&config_settings, &multisamples);
-    list_add(&config_settings, &chat_shadow);
-    list_add(&config_settings, &hold_down_sights);
-    list_add(&config_settings, &greedy_meshing);
-    list_add(&config_settings, &force_displaylist);
-    list_add(&config_settings, &smooth_fog);
-    list_add(&config_settings, &ambient_occlusion);
-    list_add(&config_settings, &show_fps);
-    list_add(&config_settings, &invert_y);
+    config_settings.push_back(player_name);
+    config_settings.push_back(mouse_sensitivity);
+    config_settings.push_back(camera_fov);
+    config_settings.push_back(volume);
+    config_settings.push_back(window_width);
+    config_settings.push_back(window_height);
+    config_settings.push_back(vsync);
+    config_settings.push_back(fullscreen);
+    config_settings.push_back(multisamples);
+    config_settings.push_back(chat_shadow);
+    config_settings.push_back(hold_down_sights);
+    config_settings.push_back(greedy_meshing);
+    config_settings.push_back(force_displaylist);
+    config_settings.push_back(smooth_fog);
+    config_settings.push_back(ambient_occlusion);
+    config_settings.push_back(show_fps);
+    config_settings.push_back(invert_y);
 }

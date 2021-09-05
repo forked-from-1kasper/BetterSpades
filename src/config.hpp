@@ -20,7 +20,7 @@
 */
 
 #include <stddef.h>
-#include <list.hpp>
+#include <vector>
 
 struct config_file_entry {
     char section[32];
@@ -53,8 +53,6 @@ extern struct RENDER_OPTIONS {
     int chat_shadow;
 } settings, settings_tmp;
 
-extern struct list config_keys;
-
 struct config_key_pair {
     int internal;
     int def;
@@ -64,6 +62,8 @@ struct config_key_pair {
     char display[24];
     char category[24];
 };
+
+extern std::vector<config_key_pair> config_keys;
 
 enum {
     CONFIG_TYPE_STRING,
@@ -83,7 +83,7 @@ struct config_setting {
     void (*label_callback)(char* buffer, size_t length, int value, size_t index);
 };
 
-extern struct list config_settings;
+extern std::vector<config_setting> config_settings;
 
 void config_register_key(int internal, int def, const char* name, int toggle, const char* display,
                          const char* category);

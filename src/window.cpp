@@ -101,6 +101,7 @@ static void window_impl_keys(GLFWwindow* window, int key, int scancode, int acti
 const char* get_function_key_name(int keycode) {
     switch (keycode) {
         case GLFW_KEY_ESCAPE:        return "ESCAPE";
+        case GLFW_KEY_SPACE:         return "SPACE";
         case GLFW_KEY_F1:            return "F1";
         case GLFW_KEY_F2:            return "F2";
         case GLFW_KEY_F3:            return "F3";
