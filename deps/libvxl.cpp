@@ -372,8 +372,8 @@ size_t libvxl_stream_read(struct libvxl_stream* stream, void* out) {
     if(length < stream->chunk_size) {
         stream->buffer_offset = 0;
     } else {
-        memmove(stream->buffer, stream->buffer + stream->chunk_size,
-                length - stream->chunk_size);
+        auto dest = (uintptr_t) stream->buffer + stream->chunk_size;
+        memmove(stream->buffer, (void*) dest, length - stream->chunk_size);
         stream->buffer_offset -= stream->chunk_size;
     }
     return min(length, stream->chunk_size);
@@ -560,8 +560,8 @@ static void libvxl_map_setair_internal(struct libvxl_map* map, int x, int y,
     auto loc = bsearch( &pos, chunk->blocks, chunk->index, sizeof(struct libvxl_block), cmp);
     if(loc) {
         auto i = ((size_t) loc - (size_t)(chunk->blocks)) / sizeof(struct libvxl_block);
-        memmove(loc, loc + sizeof(struct libvxl_block),
-                (chunk->index - i - 1) * sizeof(struct libvxl_block));
+        auto dest = (uintptr_t) loc + sizeof(struct libvxl_block);
+        memmove(loc, (void*) dest, (chunk->index - i - 1) * sizeof(struct libvxl_block));
         chunk->index--;
         if(chunk->index * LIBVXL_CHUNK_SHRINK <= chunk->length) {
             chunk->length /= LIBVXL_CHUNK_GROWTH;
