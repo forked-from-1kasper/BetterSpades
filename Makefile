@@ -27,12 +27,14 @@ LDFLAGS =
 ifeq ($(OS),Windows_NT)
     LDFLAGS += -lopenal
 else
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
+    UNAME := $(shell uname -s)
+
+    ifeq ($(UNAME),Linux)
         LDFLAGS += -lopenal
     endif
-    ifeq ($(UNAME_S),Darwin)
-        CCFLAGS += -framework OpenAL
+
+    ifeq ($(UNAME),Darwin)
+        LDFLAGS += -framework OpenAL
     endif
 endif
 
@@ -49,6 +51,7 @@ objs = $(addprefix $(1)/,$(addsuffix .o,$(2)))
 OBJS = $(call objs,$(BUILDDIR),$(MODULES) $(DEPS))
 
 all: $(BUILDDIR) $(GAMEDIR) $(RESPACK)
+binary: $(BUILDDIR)/$(BINARY)
 
 $(RESPACK):
 	wget $(PACKURL) -O $(RESPACK)
