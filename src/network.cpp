@@ -54,7 +54,7 @@ unsigned char network_keys_last = 0;
 unsigned char network_buttons_last = 0;
 unsigned char network_tool_last = 255;
 
-void* compressed_chunk_data;
+uintptr_t compressed_chunk_data;
 int compressed_chunk_data_size;
 int compressed_chunk_data_offset = 0;
 int compressed_chunk_data_estimate = 0;
@@ -99,11 +99,11 @@ void read_PacketMapChunk(void* data, int len) {
     // increase allocated memory if it is not enough to store the next chunk
     if(compressed_chunk_data_offset + len > compressed_chunk_data_size) {
         compressed_chunk_data_size += 1024 * 1024;
-        compressed_chunk_data = realloc(compressed_chunk_data, compressed_chunk_data_size);
+        compressed_chunk_data = (uintptr_t) realloc((void*) compressed_chunk_data, compressed_chunk_data_size);
         CHECK_ALLOCATION_ERROR(compressed_chunk_data)
     }
     // accept any chunk length for "superior" performance, as pointed out by github/NotAFile
-    memcpy(compressed_chunk_data + compressed_chunk_data_offset, data, len);
+    memcpy((void*) (compressed_chunk_data + compressed_chunk_data_offset), data, len);
     compressed_chunk_data_offset += len;
 }
 
@@ -296,9 +296,9 @@ void read_PacketStateData(void* data, int len) {
         void* decompressed = malloc(avail_size);
         CHECK_ALLOCATION_ERROR(decompressed)
         size_t decompressed_size;
-        struct libdeflate_decompressor* d = libdeflate_alloc_decompressor();
+        auto d = libdeflate_alloc_decompressor();
         while(1) {
-            int r = libdeflate_zlib_decompress(d, compressed_chunk_data, compressed_chunk_data_offset, decompressed,
+            int r = libdeflate_zlib_decompress(d, (void*) compressed_chunk_data, compressed_chunk_data_offset, decompressed,
                                                avail_size, &decompressed_size);
             // switch not fancy enough here, breaking out of the loop is not aesthetic
             if(r == LIBDEFLATE_INSUFFICIENT_SPACE) {
@@ -307,7 +307,7 @@ void read_PacketStateData(void* data, int len) {
                 CHECK_ALLOCATION_ERROR(decompressed)
             }
             if(r == LIBDEFLATE_SUCCESS) {
-                map_vxl_load(decompressed, decompressed_size);
+                map_vxl_load((uintptr_t) decompressed, decompressed_size);
 /*
                 char filename[128];
                 sprintf(filename, "cache/%08X.vxl", libdeflate_crc32(0, decompressed, decompressed_size));
@@ -323,7 +323,7 @@ void read_PacketStateData(void* data, int len) {
                 break;
         }
         free(decompressed);
-        free(compressed_chunk_data);
+        free((void*) compressed_chunk_data);
         libdeflate_free_decompressor(d);
     }
 }
@@ -415,7 +415,7 @@ void read_PacketPlayerLeft(void* data, int len) {
 void read_PacketMapStart(void* data, int len) {
     // ffs someone fix the wrong map size of 1.5mb
     compressed_chunk_data_size = 1024 * 1024;
-    compressed_chunk_data = malloc(compressed_chunk_data_size);
+    compressed_chunk_data = (uintptr_t) malloc(compressed_chunk_data_size);
     CHECK_ALLOCATION_ERROR(compressed_chunk_data)
     compressed_chunk_data_offset = 0;
     network_logged_in = 0;
@@ -437,7 +437,7 @@ void read_PacketMapStart(void* data, int len) {
         if(file_exists(filename)) {
             network_map_cached = 1;
             void* mapd = file_load(filename);
-            map_vxl_load(mapd, file_size(filename));
+            map_vxl_load((uintptr_t) mapd, file_size(filename));
             free(mapd);
             chunk_rebuild_all();
         }
@@ -458,8 +458,7 @@ void read_PacketWorldUpdate(void* data, int len) {
 
         if(is_075) {
             for(int k = 0; k < (len / sizeof(struct PacketWorldUpdate075)); k++) { // supports up to 256 players
-                struct PacketWorldUpdate075* p
-                    = (struct PacketWorldUpdate075*)(data + k * sizeof(struct PacketWorldUpdate075));
+                auto p = (PacketWorldUpdate075*) data + k;
                 if(players[k].connected && players[k].alive && k != local_player_id) {
                     if(distance3D(players[k].pos.x, players[k].pos.y, players[k].pos.z, p->x, 63.0F - p->z, p->y)
                        > 0.1F * 0.1F) {
@@ -475,8 +474,7 @@ void read_PacketWorldUpdate(void* data, int len) {
         } else {
             if(is_076) {
                 for(int k = 0; k < (len / sizeof(struct PacketWorldUpdate076)); k++) {
-                    struct PacketWorldUpdate076* p
-                        = (struct PacketWorldUpdate076*)(data + k * sizeof(struct PacketWorldUpdate076));
+                    auto p = (PacketWorldUpdate076*) data + k;
                     if(players[p->player_id].connected && players[p->player_id].alive
                        && p->player_id != local_player_id) {
                         if(distance3D(players[k].pos.x, players[k].pos.y, players[k].pos.z, p->x, 63.0F - p->z, p->y)

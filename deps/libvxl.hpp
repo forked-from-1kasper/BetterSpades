@@ -116,7 +116,7 @@ void libvxl_copy_chunk(struct libvxl_map* map, struct libvxl_chunk_copy* copy,
 //! @param len map data size in bytes
 //! @note Pass **NULL** as map data to create a new empty map, just water level will be filled with DEFAULT_COLOR
 //! @returns 1 on success
-bool libvxl_create(struct libvxl_map* map, size_t w, size_t h, size_t d, const void* data, size_t len);
+bool libvxl_create(struct libvxl_map* map, size_t w, size_t h, size_t d, const uintptr_t data, size_t len);
 
 //! @brief Write a map to disk, uses the libvxl_stream API internally
 //! @param map Map to be written
@@ -204,7 +204,7 @@ void libvxl_free(struct libvxl_map* map);
 //! @param depth Pointer to int where map height will be stored
 //! @param data Pointer to valid map data, left unmodified also not freed
 //! @param len compressed map size in bytes
-bool libvxl_size(size_t* size, size_t* depth, const void* data, size_t len);
+bool libvxl_size(size_t* size, size_t* depth, const uintptr_t data, size_t len);
 
 //! @brief Start streaming a map
 //! @param stream Pointer to a struct of type libvxl_stream

@@ -80,7 +80,7 @@ extern unsigned char network_tool_last;
 #define VERSION_075 3
 #define VERSION_076 4
 
-extern void* compressed_chunk_data;
+extern uintptr_t compressed_chunk_data;
 extern int compressed_chunk_data_size;
 extern int compressed_chunk_data_offset;
 extern int compressed_chunk_data_estimate;

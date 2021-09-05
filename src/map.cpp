@@ -506,7 +506,7 @@ void* falling_blocks_worker(void* user) {
 }
 
 void map_init() {
-    libvxl_create(&map, 512, 512, 64, NULL, 0);
+    libvxl_create(&map, 512, 512, 64, 0, 0);
     tesselator_create(&map_damaged_tesselator, VERTEX_INT, 0);
     pthread_rwlock_init(&map_lock, NULL);
 
@@ -716,7 +716,7 @@ int map_placedblock_color(int color) {
     return color ^ (gkrand & 0x70707);
 }
 
-void map_vxl_load(void* v, size_t size) {
+void map_vxl_load(uintptr_t v, size_t size) {
     pthread_rwlock_wrlock(&map_lock);
     libvxl_free(&map);
     libvxl_create(&map, 512, 512, 64, v, size);
@@ -729,7 +729,7 @@ void map_save_file(const char* filename) {
     pthread_rwlock_unlock(&map_lock);
 }
 
-void map_copy_blocks(struct libvxl_chunk_copy* copy, size_t x, size_t y) {
+void map_copy_blocks(libvxl_chunk_copy* copy, size_t x, size_t y) {
     pthread_rwlock_rdlock(&map_lock);
     libvxl_copy_chunk(&map, copy, x, y);
     pthread_rwlock_unlock(&map_lock);
