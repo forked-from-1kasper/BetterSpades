@@ -27,3 +27,16 @@ jobs:
 
       - name: Compile
         run: make
+
+  macos-build
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Resolve dependencies
+        run: brew install glfw enet libdeflate cglm
+
+      - name: Compile
+        run: make

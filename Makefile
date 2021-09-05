@@ -38,7 +38,7 @@ all: $(BUILDDIR) $(GAMEDIR) $(RESPACK)
 
 $(RESPACK):
 	wget $(PACKURL) -O $(RESPACK)
-	unzip $(RESPACK) -d $(GAMEDIR)
+	unzip -o $(RESPACK) -d $(GAMEDIR) || true
 
 $(BUILDDIR)/$(BINARY): $(OBJS)
 	$(CXX) $(OBJS) $(LDFLAGS) -o $(BUILDDIR)/$(BINARY)
