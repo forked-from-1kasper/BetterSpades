@@ -2137,27 +2137,6 @@ static void hud_serverlist_render(mu_Context* ctx, float scalex, float scaley) {
         mu_end_window(ctx);
     }
 
-    if(serverlist_is_outdated
-       && mu_begin_window_ex(ctx, "NEW CLIENT VERSION AVAILABLE!", mu_rect(300, 200, 350, 200),
-                             MU_OPT_HOLDFOCUS | MU_OPT_NORESIZE | MU_OPT_NOCLOSE)) {
-        mu_Container* cnt = mu_get_current_container(ctx);
-        mu_bring_to_front(ctx, cnt);
-        cnt->rect = mu_rect((settings.window_width - 350 * scaley) / 2, 200 * scaley, 350 * scaley, 200 * scaley);
-        mu_layout_row(ctx, 1, (int*) &empty_row, -ctx->text_height(ctx->style->font) * 1.75F);
-        mu_text(ctx,
-                "Your game is outdated and should be updated immediately.\n\n"
-                "Head over to https://aos.party/bs.");
-        int A = ctx->text_width(ctx->style->font, "Close", 0) * 1.6F;
-
-        int row5[] {-A, -1}; mu_layout_row(ctx, 2, (int*) &row5, 0);
-
-        if(mu_button(ctx, "Go to website"))
-            file_url("https://aos.party/bs");
-        if(mu_button(ctx, "Close"))
-            cnt->open = 0;
-        mu_end_window(ctx);
-    }
-
     if(window_time() - chat_popup_timer < chat_popup_duration
        && mu_begin_window_ex(ctx, "Disconnected from server", mu_rect(200, 250, 300, 100),
                              MU_OPT_HOLDFOCUS | MU_OPT_NORESIZE | MU_OPT_NOCLOSE)) {
