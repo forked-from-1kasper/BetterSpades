@@ -47,15 +47,6 @@ jobs:
       - name: Compile
         run: |
           make binary
-          echo "::set-env name=LIBCGLM::$(greadlink -f /usr/local/opt/cglm/lib/libcglm.0.dylib)"
-          echo "::set-env name=LIBGLFW::$(greadlink -f /usr/local/opt/glfw/lib/libglfw.3.dylib)"
-          echo "::set-env name=LIBGLEW::$(greadlink -f /usr/local/opt/glew/lib/libGLEW.2.2.dylib)"
-          echo "::set-env name=LIBGLU::$(greadlink -f /usr/local/opt/mesa-glu/lib/libGLU.1.dylib)"
-          echo "::set-env name=LIBGL::$(greadlink -f /usr/local/opt/mesa/lib/libGL.1.dylib)"
-          echo "::set-env name=LIBENET::$(greadlink -f /usr/local/opt/enet/lib/libenet.7.dylib)"
-          echo "::set-env name=LIBDEFLATE::$(greadlink -f /usr/local/opt/libdeflate/lib/libdeflate.0.dylib)"
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       - name: Upload
         uses: actions/upload-artifact@v2
@@ -63,10 +54,3 @@ jobs:
           name: macOS binary release
           path: |
             build/betterspades
-            ${{ env.LIBCGLM }}
-            ${{ env.LIBGLFW }}
-            ${{ env.LIBGLEW }}
-            ${{ env.LIBGLU }}
-            ${{ env.LIBGL }}
-            ${{ env.LIBENET }}
-            ${{ env.LIBDEFLATE }}
