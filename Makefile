@@ -51,7 +51,7 @@ objs = $(addprefix $(1)/,$(addsuffix .o,$(2)))
 OBJS = $(call objs,$(BUILDDIR),$(MODULES) $(DEPS))
 
 all: $(BUILDDIR) $(GAMEDIR) $(RESPACK)
-binary: $(BUILDDIR)/$(BINARY)
+binary: $(BUILDDIR) $(BUILDDIR)/$(BINARY)
 
 $(RESPACK):
 	wget $(PACKURL) -O $(RESPACK)
