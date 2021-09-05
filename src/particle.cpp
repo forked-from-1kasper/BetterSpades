@@ -156,9 +156,10 @@ void particle_render() {
 
 void particle_create_casing(struct Player* p) {
     Particle particle {
-        .x = p->gun_pos.x,
-        .y = p->gun_pos.y,
-        .z = p->gun_pos.z,
+        // TODO: fix me
+        .x = p->casing_pos.x,
+        .y = p->casing_pos.y,
+        .z = p->casing_pos.z,
         .vx = p->casing_dir.x * 3.5F,
         .vy = p->casing_dir.y * 3.5F,
         .vz = p->casing_dir.z * 3.5F,

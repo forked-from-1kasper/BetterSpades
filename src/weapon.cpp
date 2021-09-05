@@ -231,16 +231,14 @@ void weapon_shoot() {
     // https://pastebin.com/raw/TMjKSTXG
     // http://paste.quacknet.org/view/a3ea2743
 
-    for(int i = 0; i < ((players[local_player_id].weapon == WEAPON_SHOTGUN) ? 8 : 1); i++) {
-        float o[3] = {players[local_player_id].orientation.x, players[local_player_id].orientation.y,
-                      players[local_player_id].orientation.z};
+    for (int i = 0; i < ((players[local_player_id].weapon == WEAPON_SHOTGUN) ? 8 : 1); i++) {
+        float gun[] = {players[local_player_id].gun_pos.x, players[local_player_id].gun_pos.y, players[local_player_id].gun_pos.z};
+        float o[] = {players[local_player_id].gun_orientation.x, players[local_player_id].gun_orientation.y, players[local_player_id].gun_orientation.z};
 
         weapon_spread(&players[local_player_id], o);
 
         struct Camera_HitType hit;
-        camera_hit(&hit, local_player_id, players[local_player_id].physics.eye.x,
-                   players[local_player_id].physics.eye.y + player_height(&players[local_player_id]),
-                   players[local_player_id].physics.eye.z, o[0], o[1], o[2], 128.0F);
+        camera_hit(&hit, local_player_id, gun[0], gun[1], gun[2], o[0], o[1], o[2], 128.0F);
 
         if(players[local_player_id].input.buttons.packed != network_buttons_last) {
             struct PacketWeaponInput in;
@@ -264,9 +262,7 @@ void weapon_shoot() {
             case CAMERA_HITTYPE_PLAYER: {
                 sound_create_sticky((hit.player_section == HITTYPE_HEAD) ? &sound_spade_whack : &sound_hitplayer,
                                     players + hit.player_id, hit.player_id);
-                particle_create(0x0000FF, players[hit.player_id].physics.eye.x,
-                                players[hit.player_id].physics.eye.y + player_section_height(hit.player_section),
-                                players[hit.player_id].physics.eye.z, 3.5F, 1.0F, 8, 0.1F, 0.4F);
+                particle_create(0x0000FF, gun[0], gun[1], gun[2], 3.5F, 1.0F, 8, 0.1F, 0.4F);
 
                 struct PacketHit h;
                 h.player_id = hit.player_id;
@@ -294,9 +290,7 @@ void weapon_shoot() {
         }
 
         tracer_pvelocity(o, &players[local_player_id]);
-        tracer_add(players[local_player_id].weapon, players[local_player_id].physics.eye.x,
-                   players[local_player_id].physics.eye.y + player_height(&players[local_player_id]),
-                   players[local_player_id].physics.eye.z, o[0], o[1], o[2]);
+        tracer_add(players[local_player_id].weapon, gun[0], gun[1], gun[2], o[0], o[1], o[2]);
     }
 
     double horiz_recoil, vert_recoil;

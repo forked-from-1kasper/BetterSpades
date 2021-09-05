@@ -113,6 +113,8 @@ struct Player {
     AABB bb_2d;
     struct Orientation orientation_smooth;
     struct Position gun_pos;
+    struct Orientation gun_orientation;
+    struct Position casing_pos;
     struct Position casing_dir;
     float gun_shoot_timer;
     int ammo, ammo_reserved;

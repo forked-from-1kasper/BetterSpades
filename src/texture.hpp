@@ -40,7 +40,6 @@ extern struct texture texture_ammo_shotgun;
 extern struct texture texture_color_selection;
 
 extern struct texture texture_white;
-extern struct texture texture_target;
 extern struct texture texture_indicator;
 
 extern struct texture texture_player;

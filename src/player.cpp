@@ -810,18 +810,33 @@ void player_render(struct Player* p, int id) {
         case TOOL_GRENADE: kv6_render(&model_grenade, p->team); break;
     }
 
-    vec4 v = {0.1F, 0, -0.3F, 1};
-    matrix_vector(matrix_model, v);
-    vec4 v2 = {1.1F, 0, -0.3F, 1};
-    matrix_vector(matrix_model, v2);
+    vec4 beg = {0.0F, -0.05F, 0.0F, 1};
+    matrix_vector(matrix_model, beg);
 
-    p->gun_pos.x = v[0];
-    p->gun_pos.y = v[1];
-    p->gun_pos.z = v[2];
+    vec4 end = {0.0F, -0.05F, 1.5F, 1};
+    matrix_vector(matrix_model, end);
 
-    p->casing_dir.x = v[0] - v2[0];
-    p->casing_dir.y = v[1] - v2[1];
-    p->casing_dir.z = v[2] - v2[2];
+    vec4 casing_pos = {0.0F, -0.05F, 0.0F, 1};
+    matrix_vector(matrix_model, casing_pos);
+
+    vec4 casing_dir = {1.1F, 0, -0.3F, 1};
+    matrix_vector(matrix_model, casing_dir);
+
+    p->gun_pos.x = end[0];
+    p->gun_pos.y = end[1];
+    p->gun_pos.z = end[2];
+
+    p->gun_orientation.x = end[0] - beg[0];
+    p->gun_orientation.y = end[1] - beg[1];
+    p->gun_orientation.z = end[2] - beg[2];
+
+    p->casing_pos.x = casing_pos[0];
+    p->casing_pos.y = casing_pos[1];
+    p->casing_pos.z = casing_pos[2];
+
+    p->casing_dir.x = end[0] - casing_dir[0];
+    p->casing_dir.y = end[1] - casing_dir[1];
+    p->casing_dir.z = end[2] - casing_dir[2];
 
     matrix_pop(matrix_model);
 }
@@ -829,16 +844,16 @@ void player_render(struct Player* p, int id) {
 int player_clipbox(float x, float y, float z) {
     int sz;
 
-    if(x < 0 || x >= 512 || y < 0 || y >= 512)
+    if (x < 0 || x >= 512 || y < 0 || y >= 512)
         return 1;
-    else if(z < 0)
+    else if (z < 0)
         return 0;
     sz = (int)z;
-    if(sz == 63)
+    if (sz == 63)
         sz = 62;
-    else if(sz >= 64)
+    else if (sz >= 64)
         return 1;
-    return !map_isair((int)x, 63 - sz, (int)y);
+    return !map_isair((int) x, 63 - sz, (int) y);
 }
 
 void player_reposition(struct Player* p) {

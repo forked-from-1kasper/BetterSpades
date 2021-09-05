@@ -389,12 +389,11 @@ void libvxl_write(struct libvxl_map* map, void* out, size_t* size) {
     memset(chunk_offsets, 0, sx * sy * sizeof(size_t));
 
     size_t offset = 0;
-    for(uint32_t y = 0; y < map->height; y++)
-        for(uint32_t x = 0; x < map->width; x++)
+    for (uint32_t y = 0; y < map->height; y++)
+        for (uint32_t x = 0; x < map->width; x++)
             libvxl_column_encode(map, chunk_offsets, x, y, (uintptr_t) out, &offset);
 
-    if(size)
-        *size = offset;
+    if (size) *size = offset;
 }
 
 size_t libvxl_writefile(struct libvxl_map* map, char* name) {

@@ -42,7 +42,6 @@ struct texture texture_ammo_shotgun;
 struct texture texture_color_selection;
 
 struct texture texture_white;
-struct texture texture_target;
 struct texture texture_indicator;
 
 struct texture texture_player;
@@ -337,7 +336,6 @@ void texture_init() {
     texture_create(&texture_ammo_shotgun, "png/shotgunammo.png");
 
     texture_create(&texture_white, "png/white.png");
-    texture_create(&texture_target, "png/target.png");
     texture_create(&texture_indicator, "png/indicator.png");
 
     texture_create(&texture_player, "png/player.png");

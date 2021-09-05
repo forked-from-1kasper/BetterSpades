@@ -179,7 +179,6 @@ void cameracontroller_fps(float dt) {
     camera_vz = players[local_player_id].physics.velocity.z;
 }
 
-#define EYES_DISTANCE 0.25
 void cameracontroller_fps_render() {
     auto lx = players[local_player_id].orientation_smooth.x;
     auto lz = players[local_player_id].orientation_smooth.z;

@@ -617,10 +617,6 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
            || ((camera_mode == CameraMode::BODYVIEW || camera_mode == CameraMode::SPECTATOR)
                && cameracontroller_bodyview_mode)) {
             glColor3f(1.0F, 1.0F, 1.0F);
-
-            texture_draw(&texture_target, (settings.window_width - 16) / 2.0F, (settings.window_height + 16) / 2.0F,
-                         16, 16);
-
             if(window_time() - local_player_last_damage_timer <= 0.5F && is_local) {
                 float ang = atan2(players[local_player_id].orientation.z, players[local_player_id].orientation.x)
                     - atan2(camera_z - local_player_last_damage_z, camera_x - local_player_last_damage_x) + PI;
