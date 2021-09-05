@@ -42,13 +42,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Resolve dependencies
-        run: brew install mesa-glu glew glfw enet libdeflate cglm
+        run: brew install mesa-glu glew glfw enet libdeflate cglm coreutils
 
       - name: Compile
-        run: make binary
+        run: |
+          make binary
+          echo "::set-env name=LIBCGLM::$(greadlink -f /usr/local/opt/cglm/lib/libcglm.0.dylib)"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: macOS binary release
-          path: build/betterspades
+          path: |
+            build/betterspades
+            ${{ env.LIBCGLM }}
