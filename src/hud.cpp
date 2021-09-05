@@ -449,10 +449,6 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                 compressed_chunk_data_estimate / 1024);
         font_centered(settings.window_width / 2.0F, 130 * scalef, 27 * scalef, str);
 
-        font_select(FONT_SMALLFNT);
-        glColor3f(1.0F, 1.0F, 0.0F);
-        font_render(0.0F, 8.0F * scalef, 8.0F * scalef,
-                    "Created by ByteBit, visit https://github.com/xtreme8000/BetterSpades");
         font_select(FONT_FIXEDSYS);
     } else {
         if(window_key_down(WINDOW_KEY_HIDEHUD))
