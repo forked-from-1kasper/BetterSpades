@@ -1,8 +1,9 @@
 name: BetterSpades
 
 on:
-  tags:
-    - '*'
+  push:
+    tags:
+      - '*'
 
 jobs:
   linux-build:
