@@ -48,6 +48,7 @@ jobs:
         run: |
           make binary
           echo "::set-env name=LIBCGLM::$(greadlink -f /usr/local/opt/cglm/lib/libcglm.0.dylib)"
+          echo "::set-env name=LIBGLFW::$(greadlink -f /usr/local/opt/glfw/lib/libglfw.3.dylib)"
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -58,3 +59,4 @@ jobs:
           path: |
             build/betterspades
             ${{ env.LIBCGLM }}
+            ${{ env.LIBGLFW }}
