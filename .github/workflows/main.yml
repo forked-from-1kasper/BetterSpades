@@ -47,15 +47,13 @@ jobs:
         run: brew install mesa-glu glew glfw enet libdeflate cglm coreutils
 
       - name: Compile
-        run: |
-          make binary
+        run: make binary
 
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: macOS binary release
-          path: |
-            build/betterspades
+          path: build/betterspades
 
   windows-build:
     runs-on: windows-latest
@@ -81,9 +79,9 @@ jobs:
             mingw-w64-x86_64-libdeflate
             mingw-w64-x86_64-cglm
 
-      - name: Compile
-        run: |
-          make binary
+      - shell: msys2 {0}
+        name: Compile
+        run: make binary
 
       - name: Upload
         uses: actions/upload-artifact@v2
