@@ -7,12 +7,17 @@ RESDIR   = resources
 PACKURL = http://aos.party/bsresources.zip
 RESPACK = $(GAMEDIR)/bresources.zip
 
-BINARY  = betterspades
-CXX     = c++
+ifeq ($(OS),Windows_NT)
+    BINARY = betterspades.exe
+else
+    BINARY = betterspades
+endif
+
+CXX = c++
 
 BETTERSPADES_MAJOR = 0
 BETTERSPADES_MINOR = 1
-BETTERSPADES_PATCH = 7
+BETTERSPADES_PATCH = 8
 
 OPTS  = -DBETTERSPADES_MAJOR=$(BETTERSPADES_MAJOR)
 OPTS += -DBETTERSPADES_MINOR=$(BETTERSPADES_MINOR)
@@ -23,22 +28,22 @@ OPTS += -DUSE_SOUND
 
 CFLAGS = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 
-LDFLAGS =
+LDFLAGS = -lcglm -lglfw -lGLEW -lenet -ldeflate
 ifeq ($(OS),Windows_NT)
-    LDFLAGS += -lopenal
+    LDFLAGS += -lopenal -lopengl32 -lglu32
 else
     UNAME := $(shell uname -s)
 
     ifeq ($(UNAME),Linux)
-        LDFLAGS += -lopenal
+        LDFLAGS += -lopenal -lGL -lGLU
     endif
 
     ifeq ($(UNAME),Darwin)
-        LDFLAGS += -framework OpenAL
+        LDFLAGS += -framework OpenAL -lGL -lGLU
     endif
 endif
 
-LDFLAGS += -lcglm -lglfw -lGLEW -lGLU -lGL -lenet -ldeflate -lpthread
+LDFLAGS += -lpthread
 
 HEADERS  = src/common.hpp src/model_normals.hpp
 
