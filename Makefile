@@ -28,18 +28,18 @@ OPTS += -DUSE_SOUND
 
 CFLAGS = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 
-LDFLAGS = -lcglm -lglfw -lGLEW -lenet -ldeflate
+LDFLAGS = -lcglm  -lenet -ldeflate
 ifeq ($(OS),Windows_NT)
-    LDFLAGS += -lopenal -lopengl32 -lglu32
+    LDFLAGS += -lopenal -lglfw3 -lglew32 -lopengl32 -lglu32
 else
     UNAME := $(shell uname -s)
 
     ifeq ($(UNAME),Linux)
-        LDFLAGS += -lopenal -lGL -lGLU
+        LDFLAGS += -lopenal -lglfw -lGLEW -lGL -lGLU
     endif
 
     ifeq ($(UNAME),Darwin)
-        LDFLAGS += -framework OpenAL -lGL -lGLU
+        LDFLAGS += -framework OpenAL -lglfw -lGLEW -lGL -lGLU
     endif
 endif
 
