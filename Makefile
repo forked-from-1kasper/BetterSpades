@@ -30,7 +30,7 @@ CFLAGS = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 
 LDFLAGS = -lcglm  -lenet -ldeflate
 ifeq ($(OS),Windows_NT)
-    LDFLAGS += -lopenal -lglfw3 -lglew32 -lopengl32 -lglu32
+    LDFLAGS += -lopenal -lglfw3 -lglew32 -lopengl32 -lglu32 -lWS32_32
 else
     UNAME := $(shell uname -s)
 
