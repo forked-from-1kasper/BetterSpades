@@ -10,6 +10,5 @@ game/**
 *.vxl
 *.exe
 *.zip
-*.kv6
 *.lib
 *.dll

@@ -76,7 +76,7 @@ static bool pings_retry(void* key, void* value, void* user) {
         if(entry->trycount >= 3) {
             return true;
         } else {
-            ENetBuffer buff {.data = (void*) &pingmsg, .dataLength = 5};
+            ENetBuffer buff; buff.data = (void*) &pingmsg; buff.dataLength = 5;
             enet_socket_send(sock, &entry->addr, &buff, 1);
             entry->time_start = window_time();
             entry->trycount++;
