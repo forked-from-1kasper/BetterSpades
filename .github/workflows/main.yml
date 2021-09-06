@@ -81,7 +81,8 @@ jobs:
 
       - shell: msys2 {0}
         name: Compile
-        run: make binary
+        run: |
+          make binary
 
       - name: Upload
         uses: actions/upload-artifact@v2
