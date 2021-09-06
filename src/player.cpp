@@ -672,8 +672,7 @@ void player_render(struct Player* p, int id) {
 
     struct kv6_t* torso = p->input.keys.crouch ? &model_playertorsoc : &model_playertorso;
     struct kv6_t* leg = p->input.keys.crouch ? &model_playerlegc : &model_playerleg;
-    float height = player_height(p);
-    height -= 0.25F;
+    float height = player_height(p) - 0.25F;
 
     float len = sqrt(pow(p->orientation.x, 2.0F) + pow(p->orientation.z, 2.0F));
     float fx = p->orientation.x / len;
@@ -768,6 +767,7 @@ void player_render(struct Player* p, int id) {
     }
 
     matrix_push(matrix_model);
+
     matrix_translate(matrix_model, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);
     matrix_translate(matrix_model, 0.0F, p->input.keys.crouch * 0.1F - 0.1F * 2, 0.0F);
     matrix_pointAt(matrix_model, ox, oy, oz);
@@ -787,21 +787,36 @@ void player_render(struct Player* p, int id) {
 
     matrix_translate(matrix_model, -3.5F * 0.1F + 0.01F, 0.0F, 10 * 0.1F);
     matrix_upload();
-    switch(p->held_item) {
+
+    switch (p->held_item) {
         case TOOL_SPADE: kv6_render(&model_spade, p->team); break;
         case TOOL_BLOCK:
-            model_block.red = p->block.red / 255.0F;
+            model_block.red   = p->block.red   / 255.0F;
             model_block.green = p->block.green / 255.0F;
-            model_block.blue = p->block.blue / 255.0F;
+            model_block.blue  = p->block.blue  / 255.0F;
             kv6_render(&model_block, p->team);
             break;
         case TOOL_GUN: {
             if (p->input.buttons.rmb && p->alive) {
-                matrix_translate(matrix_model, 2.0F*0.1F, 0.2F, -0.0625F);
+                matrix_translate(matrix_model, 2.0F * 0.1F, 0.25F, -0.0625F);
                 matrix_upload();
             }
             switch (p->weapon) {
-                case WEAPON_RIFLE: kv6_render(&model_semi, p->team); break;
+                case WEAPON_RIFLE: {
+                    kv6_render(&model_semi, p->team);
+
+                    matrix_push(matrix_model);
+                    matrix_translate(matrix_model, 0.025F, 0.205F, -0.3F);
+                    kv6_render(&model_semi_rear, p->team);
+                    matrix_pop(matrix_model);
+
+                    matrix_push(matrix_model);
+                    matrix_translate(matrix_model, 0.025F, 0.21F, 0.85F);
+                    kv6_render(&model_semi_sight, p->team);
+                    matrix_pop(matrix_model);
+
+                    break;
+                }
                 case WEAPON_SMG: kv6_render(&model_smg, p->team); break;
                 case WEAPON_SHOTGUN: kv6_render(&model_shotgun, p->team); break;
             }
@@ -813,7 +828,7 @@ void player_render(struct Player* p, int id) {
     vec4 beg = {0.0F, -0.05F, 0.0F, 1};
     matrix_vector(matrix_model, beg);
 
-    vec4 end = {0.0F, -0.05F, 1.5F, 1};
+    vec4 end = {0.0F, -0.05F, 0.9F, 1};
     matrix_vector(matrix_model, end);
 
     vec4 casing_pos = {0.0F, -0.05F, 0.0F, 1};

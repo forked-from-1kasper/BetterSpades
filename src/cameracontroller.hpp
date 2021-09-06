@@ -36,5 +36,3 @@ void cameracontroller_spectator_render(void);
 void cameracontroller_bodyview_render(void);
 void cameracontroller_selection_render(void);
 void cameracontroller_death_render(void);
-
-#define EYES_DISTANCE 0.25

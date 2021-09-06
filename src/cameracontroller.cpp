@@ -179,6 +179,7 @@ void cameracontroller_fps(float dt) {
     camera_vz = players[local_player_id].physics.velocity.z;
 }
 
+#define EYE_SHIFT 0.115
 void cameracontroller_fps_render() {
     auto lx = players[local_player_id].orientation_smooth.x;
     auto lz = players[local_player_id].orientation_smooth.z;
@@ -187,9 +188,9 @@ void cameracontroller_fps_render() {
 
     const auto shift_x = 0.1; const auto shift_y = -0.25; double shift_z;
     switch (viewpoint) {
-        case Viewpoint::LEFT:   shift_z = -EYES_DISTANCE / 2.0; break;
-        case Viewpoint::CENTER: shift_z = 0.0;                  break;
-        case Viewpoint::RIGHT:  shift_z = EYES_DISTANCE / 2.0;  break;
+        case Viewpoint::LEFT:   shift_z = -EYE_SHIFT; break;
+        case Viewpoint::CENTER: shift_z = 0.0;        break;
+        case Viewpoint::RIGHT:  shift_z =  EYE_SHIFT; break;
     }
 
     auto x = camera_x + shift_x * cos(dir) - shift_z * sin(dir);

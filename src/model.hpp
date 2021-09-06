@@ -50,30 +50,38 @@ struct kv6_t {
     float red, green, blue;
 };
 
-extern struct kv6_t model_playerdead;
-extern struct kv6_t model_playerhead;
-extern struct kv6_t model_playertorso;
-extern struct kv6_t model_playertorsoc;
-extern struct kv6_t model_playerarms;
-extern struct kv6_t model_playerleg;
-extern struct kv6_t model_playerlegc;
-extern struct kv6_t model_intel;
-extern struct kv6_t model_tent;
+extern kv6_t model_playerdead;
+extern kv6_t model_playerhead;
+extern kv6_t model_playertorso;
+extern kv6_t model_playertorsoc;
+extern kv6_t model_playerarms;
+extern kv6_t model_playerleg;
+extern kv6_t model_playerlegc;
+extern kv6_t model_intel;
+extern kv6_t model_tent;
 
-extern struct kv6_t model_semi;
-extern struct kv6_t model_smg;
-extern struct kv6_t model_shotgun;
-extern struct kv6_t model_spade;
-extern struct kv6_t model_block;
-extern struct kv6_t model_grenade;
+extern kv6_t model_semi;
+extern kv6_t model_semi_rear;
+extern kv6_t model_semi_sight;
+extern kv6_t model_semi_tracer;
+extern kv6_t model_semi_casing;
 
-extern struct kv6_t model_semi_tracer;
-extern struct kv6_t model_smg_tracer;
-extern struct kv6_t model_shotgun_tracer;
+extern kv6_t model_smg;
+extern kv6_t model_smg_rear1;
+extern kv6_t model_smg_rear2;
+extern kv6_t model_smg_sight;
+extern kv6_t model_smg_tracer;
+extern kv6_t model_smg_casing;
 
-extern struct kv6_t model_semi_casing;
-extern struct kv6_t model_smg_casing;
-extern struct kv6_t model_shotgun_casing;
+extern kv6_t model_shotgun;
+extern kv6_t model_shotgun_rear;
+extern kv6_t model_shotgun_sight;
+extern kv6_t model_shotgun_tracer;
+extern kv6_t model_shotgun_casing;
+
+extern kv6_t model_spade;
+extern kv6_t model_block;
+extern kv6_t model_grenade;
 
 void kv6_calclight(int x, int y, int z);
 void kv6_rebuild_complete(void);

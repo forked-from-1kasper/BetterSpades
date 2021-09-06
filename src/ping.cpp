@@ -56,15 +56,14 @@ void ping_deinit() {
 }
 
 static void ping_lan() {
-    ENetAddress addr = {.host = 0xFFFFFFFF}; // 255.255.255.255
+    ENetAddress addr; addr.host = 0xFFFFFFFF; // 255.255.255.255
 
     char buff[] = "HELLOLAN";
-    ENetBuffer buffer = {
-        .data = (void*) &buff,
-        .dataLength = 8,
-    };
+    ENetBuffer buffer;
+    buffer.data = (void*) &buff;
+    buffer.dataLength = 8;
 
-    for(addr.port = 32882; addr.port < 32892; addr.port++)
+    for (addr.port = 32882; addr.port < 32892; addr.port++)
         enet_socket_send(lan, &addr, &buffer, 1);
 }
 
@@ -112,10 +111,9 @@ void* ping_update(void* data) {
         char tmp[512];
         ENetAddress from;
 
-        ENetBuffer buf = {
-            .data = tmp,
-            .dataLength = sizeof(tmp),
-        };
+        ENetBuffer buf;
+        buf.data = tmp;
+        buf.dataLength = sizeof(tmp);
 
         while(1) {
             int recvLength = enet_socket_receive(sock, &from, &buf, 1);
@@ -187,7 +185,7 @@ void ping_check(char* addr, int port, char* aos) {
 
     channel_put(&ping_queue, &entry);
 
-    ENetBuffer buff {.data = (void*) &pingmsg, .dataLength = 5};
+    ENetBuffer buff; buff.data = (void*) &pingmsg; buff.dataLength = 5;
     enet_socket_send(sock, &entry.addr, &buff, 1);
 }
 

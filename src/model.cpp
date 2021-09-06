@@ -33,30 +33,38 @@
 #include <model_normals.hpp>
 #include <texture.hpp>
 
-struct kv6_t model_playerdead;
-struct kv6_t model_playerhead;
-struct kv6_t model_playertorso;
-struct kv6_t model_playertorsoc;
-struct kv6_t model_playerarms;
-struct kv6_t model_playerleg;
-struct kv6_t model_playerlegc;
-struct kv6_t model_intel;
-struct kv6_t model_tent;
+kv6_t model_playerdead;
+kv6_t model_playerhead;
+kv6_t model_playertorso;
+kv6_t model_playertorsoc;
+kv6_t model_playerarms;
+kv6_t model_playerleg;
+kv6_t model_playerlegc;
+kv6_t model_intel;
+kv6_t model_tent;
 
-struct kv6_t model_semi;
-struct kv6_t model_smg;
-struct kv6_t model_shotgun;
-struct kv6_t model_spade;
-struct kv6_t model_block;
-struct kv6_t model_grenade;
+kv6_t model_semi;
+kv6_t model_semi_rear;
+kv6_t model_semi_sight;
+kv6_t model_semi_tracer;
+kv6_t model_semi_casing;
 
-struct kv6_t model_semi_tracer;
-struct kv6_t model_smg_tracer;
-struct kv6_t model_shotgun_tracer;
+kv6_t model_smg;
+kv6_t model_smg_rear1;
+kv6_t model_smg_rear2;
+kv6_t model_smg_sight;
+kv6_t model_smg_tracer;
+kv6_t model_smg_casing;
 
-struct kv6_t model_semi_casing;
-struct kv6_t model_smg_casing;
-struct kv6_t model_shotgun_casing;
+kv6_t model_shotgun;
+kv6_t model_shotgun_rear;
+kv6_t model_shotgun_sight;
+kv6_t model_shotgun_tracer;
+kv6_t model_shotgun_casing;
+
+kv6_t model_spade;
+kv6_t model_block;
+kv6_t model_grenade;
 
 static void kv6_load_file(struct kv6_t* kv6, const char* filename, float scale) {
     void* data = file_load(filename);
@@ -72,32 +80,40 @@ static void kv6_check_dimensions(struct kv6_t* kv6, float max) {
 }
 
 void kv6_init() {
-    kv6_load_file(&model_playerdead, "kv6/playerdead.kv6", 0.1F);
-    kv6_load_file(&model_playerhead, "kv6/playerhead.kv6", 0.1F);
-    kv6_load_file(&model_playertorso, "kv6/playertorso.kv6", 0.1F);
-    kv6_load_file(&model_playertorsoc, "kv6/playertorsoc.kv6", 0.1F);
-    kv6_load_file(&model_playerarms, "kv6/playerarms.kv6", 0.1F);
-    kv6_load_file(&model_playerleg, "kv6/playerleg.kv6", 0.1F);
-    kv6_load_file(&model_playerlegc, "kv6/playerlegc.kv6", 0.1F);
+    kv6_load_file(&model_playerdead, "kv6/player/dead.kv6", 0.1F);
+    kv6_load_file(&model_playerhead, "kv6/player/head.kv6", 0.1F);
+    kv6_load_file(&model_playertorso, "kv6/player/torso.kv6", 0.1F);
+    kv6_load_file(&model_playertorsoc, "kv6/player/torsoc.kv6", 0.1F);
+    kv6_load_file(&model_playerarms, "kv6/player/arms.kv6", 0.1F);
+    kv6_load_file(&model_playerleg, "kv6/player/leg.kv6", 0.1F);
+    kv6_load_file(&model_playerlegc, "kv6/player/legc.kv6", 0.1F);
 
     kv6_load_file(&model_intel, "kv6/intel.kv6", 0.2F);
     kv6_load_file(&model_tent, "kv6/cp.kv6", 0.278F);
 
     kv6_load_file(&model_semi, "kv6/semi.kv6", 0.05F);
+    kv6_load_file(&model_semi_tracer, "kv6/weapon/rifle/tracer.kv6", 0.05F);
+    kv6_load_file(&model_semi_casing, "kv6/weapon/rifle/casing.kv6", 0.0125F);
+    kv6_load_file(&model_semi_rear, "kv6/weapon/rifle/rear.kv6", 0.0025F);
+    kv6_load_file(&model_semi_sight, "kv6/weapon/rifle/sight.kv6", 0.005F);
+
     kv6_load_file(&model_smg, "kv6/smg.kv6", 0.05F);
+    kv6_load_file(&model_smg_tracer, "kv6/weapon/smg/tracer.kv6", 0.05F);
+    kv6_load_file(&model_smg_casing, "kv6/weapon/smg/casing.kv6", 0.0125F);
+    kv6_load_file(&model_smg_rear1, "kv6/weapon/smg/rear-1.kv6", 0.1F);
+    kv6_load_file(&model_smg_rear2, "kv6/weapon/smg/rear-2.kv6", 0.05F);
+    kv6_load_file(&model_smg_sight, "kv6/weapon/smg/sight.kv6", 0.08F);
+
     kv6_load_file(&model_shotgun, "kv6/shotgun.kv6", 0.05F);
+    kv6_load_file(&model_shotgun_tracer, "kv6/weapon/shotgun/tracer.kv6", 0.05F);
+    kv6_load_file(&model_shotgun_casing, "kv6/weapon/shotgun/casing.kv6", 0.0125F);
+    kv6_load_file(&model_shotgun_rear, "kv6/weapon/shotgun/rear.kv6", 0.05F);
+    kv6_load_file(&model_shotgun_sight, "kv6/weapon/shotgun/sight.kv6", 0.05F);
+
     kv6_load_file(&model_spade, "kv6/spade.kv6", 0.05F);
     kv6_load_file(&model_block, "kv6/block.kv6", 0.05F);
     model_block.colorize = true;
     kv6_load_file(&model_grenade, "kv6/grenade.kv6", 0.05F);
-
-    kv6_load_file(&model_semi_tracer, "kv6/semitracer.kv6", 0.05F);
-    kv6_load_file(&model_smg_tracer, "kv6/smgtracer.kv6", 0.05F);
-    kv6_load_file(&model_shotgun_tracer, "kv6/shotguntracer.kv6", 0.05F);
-
-    kv6_load_file(&model_semi_casing, "kv6/semicasing.kv6", 0.0125F);
-    kv6_load_file(&model_smg_casing, "kv6/smgcasing.kv6", 0.0125F);
-    kv6_load_file(&model_shotgun_casing, "kv6/shotguncasing.kv6", 0.0125F);
 
     kv6_check_dimensions(&model_playerhead, 1.2F);
     kv6_check_dimensions(&model_playertorso, 1.8F);
