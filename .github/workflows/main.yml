@@ -1,9 +1,10 @@
 name: BetterSpades
 
 on:
-  push:
-    tags:
-      - '*'
+  #push:
+  #  tags:
+  #    - '*'
+  - push
 
 jobs:
   linux-build:
@@ -55,3 +56,38 @@ jobs:
           name: macOS binary release
           path: |
             build/betterspades
+
+  windows-build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: '${{ matrix.icon }} Setup MSYS2'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.sys }}
+          update: true
+          install: >
+            git
+            base-devel
+            tree
+            mingw-w64-x86_64-toolchain
+            mingw-w64-openal
+            mingw-w64-glew
+            mingw-w64-glfw
+            mingw-w64-enet
+            mingw-w64-libdeflate
+            mingw-w64-cglm
+
+      - name: Compile
+        run: |
+          make binary
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Windows binary release
+          path: |
+            build/betterspades.exe
