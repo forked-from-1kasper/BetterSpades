@@ -29,7 +29,7 @@ OPTS += -DUSE_SOUND
 CFLAGS = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 
 ifeq ($(OS),Windows_NT)
-    LDFLAGS = -static-libgcc -static-libstdc++ -lopenal -lgdi32 -Wl,-Bstatic -lcglm -lenet -ldeflate -lglfw3 -lglew32 -lpthread -Wl,-Bdynamic -lopengl32 -lglu32 -lwinmm -lws2_32
+    LDFLAGS = -static-libgcc -static-libstdc++ -lopenal -Wl,-Bstatic -lcglm -lenet -ldeflate -lglfw3 -lglew32 -lpthread -Wl,-Bdynamic -lopengl32 -lglu32 -lgdi32 -lwinmm -lws2_32
 else
     UNAME := $(shell uname -s)
 
@@ -38,7 +38,7 @@ else
     endif
 
     ifeq ($(UNAME),Darwin)
-        LDFLAGS = -framework OpenAL -Wl,-Bstatic -lcglm -lenet -ldeflate -lglfw -lGLEW -Wl,-Bdynamic -lGL -lGLU -lpthread
+        LDFLAGS = -framework OpenAL -lcglm -lenet -ldeflate -lglfw -lGLEW -lGL -lGLU -lpthread
     endif
 endif
 
