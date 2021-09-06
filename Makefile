@@ -28,22 +28,19 @@ OPTS += -DUSE_SOUND
 
 CFLAGS = -Wno-narrowing -std=c++2a $(OPTS) -I$(DEPSDIR) -I$(SRCDIR)
 
-LDFLAGS = -lcglm  -lenet -ldeflate
 ifeq ($(OS),Windows_NT)
-    LDFLAGS += -lopenal -lglfw3 -lglew32 -lopengl32 -lglu32 -lWS32_32
+    LDFLAGS = -static-libgcc -static-libstdc++ -lopenal -Wl,-Bstatic -lcglm -lenet -ldeflate -lglfw3 -lglew32 -lopengl32 -lglu32 -lws2_32 -lpthread -Wl,-Bdynamic
 else
     UNAME := $(shell uname -s)
 
     ifeq ($(UNAME),Linux)
-        LDFLAGS += -lopenal -lglfw -lGLEW -lGL -lGLU
+        LDFLAGS = -lcglm -lenet -ldeflate -lopenal -lglfw -lGLEW -lGL -lGLU -lpthread
     endif
 
     ifeq ($(UNAME),Darwin)
-        LDFLAGS += -framework OpenAL -lglfw -lGLEW -lGL -lGLU
+        LDFLAGS = -lcglm -lenet -ldeflate -framework OpenAL -lglfw -lGLEW -lGL -lGLU -lpthread
     endif
 endif
-
-LDFLAGS += -lpthread
 
 HEADERS  = src/common.hpp src/model_normals.hpp
 
