@@ -61,7 +61,3 @@ You will need to compile the following by yourself, or get hold of precompiled b
 * OpenAL soft *(only needed on Windows)*
 * libdeflate
 * enet
-
-Follow the instructions on their project page, then place produced static libraries in `deps/`.
-
-All other requirements of the above list (like single file libs) will be downloaded by CMake automatically and **don't** need to be taken care of. Because state of copyright of 0.75 assets is unknown, CMake will also download additional assets from [*here*](http://aos.party/bsresources.zip) which are not part of this repository.
