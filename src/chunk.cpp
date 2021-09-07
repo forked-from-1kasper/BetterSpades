@@ -782,7 +782,7 @@ void chunk_update_all() {
             results[k].chunk->updated = false;
         }
 
-        struct chunk_result_packet* result = results + drain - 1;
+        auto result = results + drain - 1;
 
         for(size_t k = 0; k < drain; k++, result--) {
             if(!result->chunk->updated) {

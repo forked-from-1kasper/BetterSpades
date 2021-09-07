@@ -811,7 +811,7 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
         }
 
         // draw the minimap
-        if(camera_mode != CameraMode::SELECTION) {
+        if (camera_mode != CameraMode::SELECTION) {
             glColor3f(1.0F, 1.0F, 1.0F);
             // large
             if(window_key_down(WINDOW_KEY_MAP)) {
@@ -829,8 +829,6 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                     font_centered(minimap_x - 8 * scalef, minimap_y - (64 * k + 32 - 4) * scalef, 8.0F * scalef, c);
                 }
                 font_select(FONT_FIXEDSYS);
-
-                tracer_minimap(1, scalef, minimap_x, minimap_y);
 
                 if(gamestate.gamemode_type == GAMEMODE_CTF) {
                     if(!gamestate.gamemode.ctf.team_1_intel) {
@@ -915,132 +913,6 @@ static void hud_ingame_render(mu_Context* ctx, float scalex, float scalef) {
                 texture_draw_rotated(&texture_player, minimap_x + camera_x * scalef, minimap_y - camera_z * scalef,
                                      12 * scalef, 12 * scalef, camera_rot_x + PI);
                 glColor3f(1.0F, 1.0F, 1.0F);
-            } else {
-                // minimized, top right
-                float view_x = camera_x - 64.0F; // minc(maxc(camera_x-64.0F,0.0F),map_size_x+1-128.0F);
-                float view_z = camera_z - 64.0F; // minc(maxc(camera_z-64.0F,0.0F),map_size_z+1-128.0F);
-
-                switch(players[local_player_id].team) {
-                    case TEAM_1: glColor3ub(gamestate.team_1.red, gamestate.team_1.green, gamestate.team_1.blue); break;
-                    case TEAM_2: glColor3ub(gamestate.team_2.red, gamestate.team_2.green, gamestate.team_2.blue); break;
-                    case TEAM_SPECTATOR:
-                    default: glColor3f(0.0F, 0.0F, 0.0F); // same as chat
-                }
-
-                char sector_str[3] = {(int)(camera_x / 64.0F) + 'A', (int)(camera_z / 64.0F) + '1', 0};
-                font_centered(settings.window_width - 79 * scalef, 456 * scalef, 20.0F * scalef, sector_str);
-
-                glColor3ub(0, 0, 0);
-                texture_draw_empty(settings.window_width - 144 * scalef, 586 * scalef, 130 * scalef, 130 * scalef);
-                glColor3f(1.0F, 1.0F, 1.0F);
-
-                texture_draw_sector(&texture_minimap, settings.window_width - 143 * scalef, 585 * scalef, 128 * scalef,
-                                    128 * scalef, (camera_x - 64.0F) / 512.0F, (camera_z - 64.0F) / 512.0F, 0.25F,
-                                    0.25F);
-
-                tracer_minimap(0, scalef, view_x, view_z);
-
-                if(gamestate.gamemode_type == GAMEMODE_CTF) {
-                    float tent1_x = minc(maxc(gamestate.gamemode.ctf.team_1_base.x, view_x), view_x + 128.0F) - view_x;
-                    float tent1_y = minc(maxc(gamestate.gamemode.ctf.team_1_base.y, view_z), view_z + 128.0F) - view_z;
-
-                    float tent2_x = minc(maxc(gamestate.gamemode.ctf.team_2_base.x, view_x), view_x + 128.0F) - view_x;
-                    float tent2_y = minc(maxc(gamestate.gamemode.ctf.team_2_base.y, view_z), view_z + 128.0F) - view_z;
-
-                    if(map_object_visible(gamestate.gamemode.ctf.team_1_base.x, 0.0F,
-                                          gamestate.gamemode.ctf.team_1_base.y)) {
-                        glColor3f(gamestate.team_1.red * 0.94F, gamestate.team_1.green * 0.94F,
-                                  gamestate.team_1.blue * 0.94F);
-                        texture_draw_empty_rotated(settings.window_width - 143 * scalef + tent1_x * scalef,
-                                                   (585 - tent1_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                        glColor3f(1.0F, 1.0F, 1.0F);
-                        texture_draw_rotated(&texture_medical, settings.window_width - 143 * scalef + tent1_x * scalef,
-                                             (585 - tent1_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                    }
-                    if(!gamestate.gamemode.ctf.team_1_intel) {
-                        float intel_x
-                            = minc(maxc(gamestate.gamemode.ctf.team_1_intel_location.dropped.x, view_x), view_x + 128.0F)
-                            - view_x;
-                        float intel_y
-                            = minc(maxc(gamestate.gamemode.ctf.team_1_intel_location.dropped.y, view_z), view_z + 128.0F)
-                            - view_z;
-                        glColor3ub(gamestate.team_1.red, gamestate.team_1.green, gamestate.team_1.blue);
-                        texture_draw_rotated(&texture_intel, settings.window_width - 143 * scalef + intel_x * scalef,
-                                             (585 - intel_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                    }
-
-                    if(map_object_visible(gamestate.gamemode.ctf.team_2_base.x, 0.0F,
-                                          gamestate.gamemode.ctf.team_2_base.y)) {
-                        glColor3f(gamestate.team_2.red * 0.94F, gamestate.team_2.green * 0.94F,
-                                  gamestate.team_2.blue * 0.94F);
-                        texture_draw_empty_rotated(settings.window_width - 143 * scalef + tent2_x * scalef,
-                                                   (585 - tent2_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                        glColor3f(1.0F, 1.0F, 1.0F);
-                        texture_draw_rotated(&texture_medical, settings.window_width - 143 * scalef + tent2_x * scalef,
-                                             (585 - tent2_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                    }
-                    if(!gamestate.gamemode.ctf.team_2_intel) {
-                        float intel_x
-                            = minc(maxc(gamestate.gamemode.ctf.team_2_intel_location.dropped.x, view_x), view_x + 128.0F)
-                            - view_x;
-                        float intel_y
-                            = minc(maxc(gamestate.gamemode.ctf.team_2_intel_location.dropped.y, view_z), view_z + 128.0F)
-                            - view_z;
-                        glColor3ub(gamestate.team_2.red, gamestate.team_2.green, gamestate.team_2.blue);
-                        texture_draw_rotated(&texture_intel, settings.window_width - 143 * scalef + intel_x * scalef,
-                                             (585 - intel_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                    }
-                }
-                if(gamestate.gamemode_type == GAMEMODE_TC) {
-                    for(int k = 0; k < gamestate.gamemode.tc.territory_count; k++) {
-                        switch(gamestate.gamemode.tc.territory[k].team) {
-                            case TEAM_1:
-                                glColor3f(gamestate.team_1.red * 0.94F, gamestate.team_1.green * 0.94F,
-                                          gamestate.team_1.blue * 0.94F);
-                                break;
-                            case TEAM_2:
-                                glColor3f(gamestate.team_2.red * 0.94F, gamestate.team_2.green * 0.94F,
-                                          gamestate.team_2.blue * 0.94F);
-                                break;
-                            default:
-                            case TEAM_SPECTATOR: glColor3ub(0, 0, 0);
-                        }
-                        float t_x = minc(maxc(gamestate.gamemode.tc.territory[k].x, view_x), view_x + 128.0F) - view_x;
-                        float t_y = minc(maxc(gamestate.gamemode.tc.territory[k].y, view_z), view_z + 128.0F) - view_z;
-                        texture_draw_rotated(&texture_command, settings.window_width - 143 * scalef + t_x * scalef,
-                                             (585 - t_y) * scalef, 12 * scalef, 12 * scalef, 0.0F);
-                    }
-                }
-
-                for(int k = 0; k < PLAYERS_MAX; k++) {
-                    if(players[k].connected && players[k].alive
-                       && (players[k].team == players[local_player_id].team
-                           || (camera_mode == CameraMode::SPECTATOR
-                               && (k == local_player_id || players[k].team != TEAM_SPECTATOR)))) {
-                        if(k == local_player_id) {
-                            glColor3ub(0, 255, 255);
-                        } else {
-                            switch(players[k].team) {
-                                case TEAM_1:
-                                    glColor3ub(gamestate.team_1.red, gamestate.team_1.green, gamestate.team_1.blue);
-                                    break;
-                                case TEAM_2:
-                                    glColor3ub(gamestate.team_2.red, gamestate.team_2.green, gamestate.team_2.blue);
-                                    break;
-                            }
-                        }
-                        float player_x = ((k == local_player_id) ? camera_x : players[k].pos.x) - view_x;
-                        float player_y = ((k == local_player_id) ? camera_z : players[k].pos.z) - view_z;
-                        if(player_x > 0.0F && player_x < 128.0F && player_y > 0.0F && player_y < 128.0F) {
-                            float ang = (k == local_player_id) ?
-                                camera_rot_x + PI :
-                                -atan2(players[k].orientation.z, players[k].orientation.x) - HALFPI;
-                            texture_draw_rotated(&texture_player,
-                                                 settings.window_width - 143 * scalef + player_x * scalef,
-                                                 (585 - player_y) * scalef, 12 * scalef, 12 * scalef, ang);
-                        }
-                    }
-                }
             }
         }
 

@@ -40,44 +40,6 @@ void tracer_pvelocity(float* o, struct Player* p) {
     o[2] = o[2] * 256.0F / 32.0F + p->physics.velocity.z;
 }
 
-struct tracer_minimap_info {
-    int large;
-    float scalef;
-    float minimap_x;
-    float minimap_y;
-};
-
-static bool tracer_minimap_single(void* obj, void* user) {
-    struct Tracer* t = (struct Tracer*)obj;
-    struct tracer_minimap_info* info = (struct tracer_minimap_info*)user;
-
-    if(info->large) {
-        float ang = -atan2(t->r.direction.z, t->r.direction.x) - HALFPI;
-        texture_draw_rotated(&texture_tracer, info->minimap_x + t->r.origin.x * info->scalef,
-                             info->minimap_y - t->r.origin.z * info->scalef, 15 * info->scalef, 15 * info->scalef, ang);
-    } else {
-        float tracer_x = t->r.origin.x - info->minimap_x;
-        float tracer_y = t->r.origin.z - info->minimap_y;
-        if(tracer_x > 0.0F && tracer_x < 128.0F && tracer_y > 0.0F && tracer_y < 128.0F) {
-            float ang = -atan2(t->r.direction.z, t->r.direction.x) - HALFPI;
-            texture_draw_rotated(&texture_tracer, settings.window_width - 143 * info->scalef + tracer_x * info->scalef,
-                                 (585 - tracer_y) * info->scalef, 15 * info->scalef, 15 * info->scalef, ang);
-        }
-    }
-
-    return false;
-}
-
-void tracer_minimap(int large, float scalef, float minimap_x, float minimap_y) {
-    tracer_minimap_info info {
-        .large = large,
-        .scalef = scalef,
-        .minimap_x = minimap_x,
-        .minimap_y = minimap_y,
-    };
-    entitysys_iterate(&tracers, &info, tracer_minimap_single);
-}
-
 void tracer_add(int type, float x0, float y0, float z0, float dx, float dy, float dz) {
     auto x = x0 + dx / 4.0F; auto y = y0 + dy / 4.0F; auto z = z0 + dz / 4.0F;
 
