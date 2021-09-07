@@ -16,10 +16,6 @@
 
 ### Quick usage guide
 
-**As of right now, you can download the newest stable version from the [releases page](https://github.com/xtreme8000/BetterSpades/releases).**
-
-**You can get [nightly builds here](https://aos.party/jenkins/job/BetterSpades/).**
-
 You can either:
 * use the client temporarily by extracting the downloaded zip into a new directory.
 * extract all contents to your current Ace of Spades installation directory (normally found at `C:/Ace of Spades/`), effectively replacing the old voxlap version
@@ -69,51 +65,6 @@ You will need to compile the following by yourself, or get hold of precompiled b
 Follow the instructions on their project page, then place produced static libraries in `deps/`.
 
 All other requirements of the above list (like single file libs) will be downloaded by CMake automatically and **don't** need to be taken care of. Because state of copyright of 0.75 assets is unknown, CMake will also download additional assets from [*here*](http://aos.party/bsresources.zip) which are not part of this repository.
-
-#### Windows
-
-This project uses CMake to generate all Makefiles automatically. It's best to use MinGW-w64 for GCC on Windows. You can generate the required files by opening `cmd.exe` in the `build/` directory and typing:
-```
-cmake -G "MinGW Makefiles" ..
-mingw32-make
-```
-
-If everything went well, the client should be in the `build/BetterSpades/` subfolder.
-
-When starting `client.exe`, you will be greeted by a server list. Select a server on it to start playing!
-You can also start the client the same way as you did with the voxlap version by opening cmd and putting an `aos://` link in as the first argument:
-
-```
-client.exe -aos://16777343:32887 //Connects to a local server
-```
-
-#### Linux
-
-Compilation now works the same on Linux. Just change the build system to `Unix Makefiles` or leaving it as default will work too (`cmake ..`).
-
-You can build each library yourself, or install them with your distro's package manager:
-```
-sudo apt install libgl1-mesa libgl1-mesa-dev libopenal1 libopenal-dev libglfw-dev libenet-dev libglew-dev
-```
-(this does not include [libdeflate](https://github.com/ebiggers/libdeflate) which is a requirement too, see [_Wiki/Building_](https://github.com/xtreme8000/BetterSpades/wiki/Building) for more details)
-
-Start the client e.g. with the following inside the `build/bin/` directory:
-```
-./client
-```
-Or connect directly to localhost:
-```
-./client -aos://16777343:32887
-```
-
-
-#### macOS
-
-The same instructions for Linux work on macOS aside from some minor differences. First, use Homebrew or MacPorts to grab dependencies:
-```
-brew install glfw enet
-```
-The development headers for OpenAL and OpenGL don't have to be installed since they come with macOS by default. [libdeflate](https://github.com/ebiggers/libdeflate) should be installed and placed manually in a way similar to Linux. See [_Wiki/Building_](https://github.com/xtreme8000/BetterSpades/wiki/Building) for more details.
 
 ## Gallery
 
