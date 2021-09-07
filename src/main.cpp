@@ -335,13 +335,9 @@ void display() {
             if(hud_active->render_localplayer) {
                 float tmp2 = players[local_player_id].physics.eye.y;
                 players[local_player_id].physics.eye.y = last_cy;
-                if(camera_mode == CameraMode::FPS)
+                if (camera_mode == CameraMode::FPS)
                     glDepthRange(0.0F, 0.05F);
-                matrix_push(matrix_projection);
-                matrix_translate(matrix_projection, 0.0F, -0.25F, 0.0F);
-                matrix_upload_p();
                 player_render(&players[local_player_id], local_player_id);
-                matrix_pop(matrix_projection);
                 glDepthRange(0.0F, 1.0F);
                 players[local_player_id].physics.eye.y = tmp2;
             }

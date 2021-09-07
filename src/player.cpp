@@ -384,9 +384,9 @@ void player_render_all() {
             }
         }
         if(k != local_player_id) {
-            if(camera_CubeInFrustum(players[k].pos.x, players[k].pos.y, players[k].pos.z, 1.0F, 2.0F)
-               && distance2D(players[k].pos.x, players[k].pos.z, camera_x, camera_z)
-                   <= pow(settings.render_distance + 2.0F, 2.0F)) {
+            if (camera_CubeInFrustum(players[k].pos.x, players[k].pos.y, players[k].pos.z, 1.0F, 2.0F)
+                && distance2D(players[k].pos.x, players[k].pos.z, camera_x, camera_z)
+                    <= pow(settings.render_distance + 2.0F, 2.0F)) {
                 player_intersection intersects = {0};
                 player_render(players + k, k);
                 player_collision(players + k, &ray, &intersects);
@@ -670,8 +670,9 @@ void player_render(struct Player* p, int id) {
 
     float time = window_time() * 1000.0F;
 
-    struct kv6_t* torso = p->input.keys.crouch ? &model_playertorsoc : &model_playertorso;
-    struct kv6_t* leg = p->input.keys.crouch ? &model_playerlegc : &model_playerleg;
+    kv6_t* torso = p->input.keys.crouch ? &model_playertorsoc : &model_playertorso;
+    kv6_t* leg   = p->input.keys.crouch ? &model_playerlegc : &model_playerleg;
+
     float height = player_height(p) - 0.25F;
 
     float len = sqrt(pow(p->orientation.x, 2.0F) + pow(p->orientation.z, 2.0F));

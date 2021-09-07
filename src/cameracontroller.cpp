@@ -190,7 +190,7 @@ void cameracontroller_fps_render() {
         viewpoint = players[local_player_id].input.buttons.rmb ? Viewpoint::RIGHT : Viewpoint::CENTER;
     else viewpoint = Viewpoint::CENTER;
 
-    const auto shift_x = 0.1; const auto shift_y = -0.25; double shift_z;
+    const auto shift_x = 0.1; const auto shift_y = 0.0; double shift_z;
     switch (viewpoint) {
         case Viewpoint::LEFT:   shift_z = -EYE_SHIFT; break;
         case Viewpoint::CENTER: shift_z = 0.0;        break;
