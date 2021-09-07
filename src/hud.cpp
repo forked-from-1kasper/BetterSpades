@@ -1221,50 +1221,25 @@ static void hud_ingame_keyboard(int key, int action, int mods, int internal) {
             strcpy(incomplete, match);
     }
 
-    if(chat_input_mode == CHAT_NO_INPUT) {
-        if (camera_mode == CameraMode::FPS && players[local_player_id].alive) {
-            switch (action) {
-                case WINDOW_RELEASE: {
-                    switch (key) {
-                        case WINDOW_KEY_CLOSE_LEFT_EYE: viewpoint = Viewpoint::RIGHT; break;
-                        case WINDOW_KEY_CLOSE_RIGHT_EYE: viewpoint = Viewpoint::LEFT; break;
-                    }
-                    break;
-                }
-
-                case WINDOW_PRESS: {
-                    switch (key) {
-                        case WINDOW_KEY_CLOSE_LEFT_EYE: case WINDOW_KEY_CLOSE_RIGHT_EYE:
-                            viewpoint = Viewpoint::CENTER; break;
-                    }
-                    break;
-                }
-            }
-        }
-
-        if(action == WINDOW_PRESS) {
-            if(!network_connected) {
-                if(key == WINDOW_KEY_F1) {
+    if (chat_input_mode == CHAT_NO_INPUT) {
+        if (action == WINDOW_PRESS) {
+            if (!network_connected) {
+                if (key == WINDOW_KEY_F1)
                     camera_mode = CameraMode::SELECTION;
-                }
-                if(key == WINDOW_KEY_F2) {
+                if (key == WINDOW_KEY_F2)
                     camera_mode = CameraMode::FPS;
-                }
-                if(key == WINDOW_KEY_F3) {
+                if (key == WINDOW_KEY_F3)
                     camera_mode = CameraMode::SPECTATOR;
-                }
-                if(key == WINDOW_KEY_F4) {
+                if (key == WINDOW_KEY_F4)
                     camera_mode = CameraMode::BODYVIEW;
-                }
-                if(key == WINDOW_KEY_SNEAK) {
+                if (key == WINDOW_KEY_SNEAK) {
                     log_debug("%f,%f,%f,%f,%f", camera_x, camera_y, camera_z, camera_rot_x, camera_rot_y);
                     players[local_player_id].pos.x = 256.0F;
                     players[local_player_id].pos.y = 63.0F;
                     players[local_player_id].pos.z = 256.0F;
                 }
-                if(key == WINDOW_KEY_CROUCH) {
+                if (key == WINDOW_KEY_CROUCH)
                     players[local_player_id].alive = !players[local_player_id].alive;
-                }
             }
 
             if(key == WINDOW_KEY_LASTTOOL) {

@@ -268,8 +268,6 @@ void config_reload() {
     config_register_key(WINDOW_KEY_TOOL2, GLFW_KEY_2, "tool_block", 0, "Select block", "Tools & Weapons");
     config_register_key(WINDOW_KEY_TOOL3, GLFW_KEY_3, "tool_gun", 0, "Select gun", "Tools & Weapons");
     config_register_key(WINDOW_KEY_TOOL4, GLFW_KEY_4, "tool_grenade", 0, "Select grenade", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_CLOSE_LEFT_EYE, GLFW_KEY_GRAVE_ACCENT, "close_left_eye", 0, "Close left eye", "Tools & Weapons");
-    config_register_key(WINDOW_KEY_CLOSE_RIGHT_EYE, GLFW_KEY_F, "close_right_eye", 0, "Close right eye", "Tools & Weapons");
     config_register_key(WINDOW_KEY_TAB, GLFW_KEY_TAB, "view_score", 0, "Score", "Information");
     config_register_key(WINDOW_KEY_ESCAPE, GLFW_KEY_ESCAPE, "quit_game", 0, "Quit", "Game");
     config_register_key(WINDOW_KEY_MAP, GLFW_KEY_M, "view_map", 1, "Map", "Information");

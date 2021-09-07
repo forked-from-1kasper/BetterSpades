@@ -89,14 +89,14 @@ void matrix_vector(mat4 m, vec4 v) {
 
 void matrix_pointAt(mat4 m, float dx, float dy, float dz) {
     float l = sqrt(dx * dx + dy * dy + dz * dz);
-    if(l) {
+    if (l) {
         dx /= l;
         dy /= l;
         dz /= l;
     }
     float rx = -atan2(dz, dx) * GLM_1_PI * 180.0F;
     matrix_rotate(m, rx, 0.0F, 1.0F, 0.0F);
-    if(dy) {
+    if (dy) {
         float ry = asin(dy) * GLM_1_PI * 180.0F;
         matrix_rotate(m, ry, 0.0F, 0.0F, 1.0F);
     }
@@ -117,7 +117,6 @@ void matrix_lookAt(mat4 m, double eyex, double eyey, double eyez, double centerx
     vec3 up     {upx, upy, upz};
 
     glmc_lookat(eye, center, up, m);
-    // matrix_translate(-eyex, -eyey, -eyez);
 }
 
 void matrix_upload() {

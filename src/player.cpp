@@ -366,7 +366,7 @@ void player_render_all() {
                     if(hit.type == CAMERA_HITTYPE_BLOCK && hit.y > 1) {
                         sound_create(SOUND_WORLD, &sound_hitground, hit.x + 0.5F, hit.y + 0.5F, hit.z + 0.5F);
                         if(k == local_player_id) {
-                            struct PacketBlockAction blk;
+                            PacketBlockAction blk;
                             blk.action_type = ACTION_SPADE;
                             blk.player_id = local_player_id;
                             blk.x = hit.x;
@@ -387,7 +387,7 @@ void player_render_all() {
             if(camera_CubeInFrustum(players[k].pos.x, players[k].pos.y, players[k].pos.z, 1.0F, 2.0F)
                && distance2D(players[k].pos.x, players[k].pos.z, camera_x, camera_z)
                    <= pow(settings.render_distance + 2.0F, 2.0F)) {
-                struct player_intersection intersects = {0};
+                player_intersection intersects = {0};
                 player_render(players + k, k);
                 player_collision(players + k, &ray, &intersects);
                 if(player_intersection_exists(&intersects)) {
