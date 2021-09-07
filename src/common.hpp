@@ -23,10 +23,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#ifdef USE_RPC
-#include <discord_rpc.h>
-#endif
-
 #ifdef _WIN32
 #define OS_WINDOWS
 #endif

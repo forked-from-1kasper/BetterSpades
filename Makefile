@@ -47,7 +47,7 @@ HEADERS  = src/common.hpp src/model_normals.hpp
 DEPS     = hashtable ini libvxl log microui parson lodepng http stb_truetype dr_wav
 MODULES  = aabb camera cameracontroller chunk config file font glx grenade hud main map
 MODULES += matrix model network particle player sound texture tracer weapon window utils ping
-MODULES += minheap rpc tesselator channel entitysystem
+MODULES += minheap tesselator channel entitysystem
 
 objs = $(addprefix $(1)/,$(addsuffix .o,$(2)))
 OBJS = $(call objs,$(BUILDDIR),$(MODULES) $(DEPS))

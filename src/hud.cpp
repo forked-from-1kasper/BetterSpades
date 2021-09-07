@@ -36,7 +36,6 @@
 #include <parson.hpp>
 #include <config.hpp>
 #include <network.hpp>
-#include <rpc.hpp>
 #include <map.hpp>
 #include <player.hpp>
 #include <camera.hpp>
@@ -1846,7 +1845,6 @@ static void hud_serverlist_init() {
     ping_stop();
     network_disconnect();
     window_title(NULL);
-    rpc_seti(RPC_VALUE_SLOTS, 0);
 
     window_mousemode(WINDOW_CURSOR_ENABLED);
 
@@ -1951,14 +1949,7 @@ static void server_c(char* address, char* name) {
         hud_change(&hud_ingame);
     } else {
         window_title(name);
-        if(name && address) {
-            rpc_setv(RPC_VALUE_SERVERNAME, name);
-            rpc_setv(RPC_VALUE_SERVERURL, address);
-            rpc_seti(RPC_VALUE_SLOTS, 32);
-        } else {
-            rpc_seti(RPC_VALUE_SLOTS, 0);
-        }
-        if(network_connect_string(address))
+        if (network_connect_string(address))
             hud_change(&hud_ingame);
     }
 }

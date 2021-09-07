@@ -28,7 +28,6 @@
 #include <font.hpp>
 #include <weapon.hpp>
 #include <window.hpp>
-#include <rpc.hpp>
 #include <network.hpp>
 #include <sound.hpp>
 #include <map.hpp>
@@ -482,8 +481,6 @@ void init() {
     grenade_init();
 
     weapon_set();
-
-    rpc_init();
 }
 
 void reshape(struct window_instance* window, int width, int height) {
@@ -641,7 +638,6 @@ void mouse_scroll(struct window_instance* window, double xoffset, double yoffset
 }
 
 void deinit() {
-    rpc_deinit();
     ping_deinit();
     if(network_connected)
         network_disconnect();
@@ -773,8 +769,6 @@ int main(int argc, char** argv) {
         sound_update();
         network_update();
         window_update();
-
-        rpc_update();
 
         if(settings.vsync > 1 && (window_time() - last_frame_start) < (1.0 / settings.vsync)) {
             double sleep_s = 1.0 / settings.vsync - (window_time() - last_frame_start);
