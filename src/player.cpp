@@ -759,11 +759,16 @@ void player_render(struct Player* p, int id) {
     mat4 matrix_arms; matrix_load(matrix_arms, matrix_model);
     matrix_translate(matrix_arms, p->physics.eye.x, p->physics.eye.y + height, p->physics.eye.z);
     matrix_translate(matrix_arms, 0.0F, p->input.keys.crouch * 0.1F - 0.1F * 2, 0.0F);
-    matrix_pointAt(matrix_arms, ox, oy, oz);
-    matrix_rotate(matrix_arms, 90.0F, 0.0F, 1.0F, 0.0F);
 
-    if (p->held_item == TOOL_GUN && !(p->input.buttons.rmb && p->alive))
-        matrix_rotate(matrix_arms, 15.0F, 1.0F, 0.0F, 0.0F);
+    float rx = -atan2(oz, ox) * GLM_1_PI * 180.0F;
+    float ry = asin(oy) * GLM_1_PI * 180.0F;
+
+    if (p->held_item == TOOL_GUN && !(p->input.buttons.rmb && p->alive)) ry -= 15.0F;
+    if (ry <= -60.0F) ry = -60.0F;
+
+    matrix_rotate(matrix_arms, rx, 0.0F, 1.0F, 0.0F);
+    matrix_rotate(matrix_arms, ry, 0.0F, 0.0F, 1.0F);
+    matrix_rotate(matrix_arms, 90.0F, 0.0F, 1.0F, 0.0F);
 
     float* angles = player_tool_func(p);
     matrix_rotate(matrix_arms, angles[0], 1.0F, 0.0F, 0.0F);
@@ -814,10 +819,10 @@ void player_render(struct Player* p, int id) {
         case TOOL_GRENADE: kv6_render(&model_grenade, p->team); break;
     }
 
-    vec4 beg = {0.0F, -0.05F, 0.0F, 1};
+    vec4 beg = {0.0F, 0.15F, 0.0F, 1};
     matrix_vector(matrix_arms, beg);
 
-    vec4 end = {0.0F, -0.05F, 0.9F, 1};
+    vec4 end = {0.0F, 0.15F, 0.9F, 1};
     matrix_vector(matrix_arms, end);
 
     vec4 casing_pos = {0.0F, -0.05F, 0.0F, 1};

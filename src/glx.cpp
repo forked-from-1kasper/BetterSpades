@@ -150,32 +150,30 @@ void glx_displaylist_draw(struct glx_displaylist* x, int type) {
         glBindBuffer(GL_ARRAY_BUFFER, x->modern);
 
         size_t len_vertex = ((type == GLX_DISPLAYLIST_NORMAL) ? sizeof(GLshort) : sizeof(GLfloat)) * 3;
-        size_t len_color = x->has_color ? (sizeof(GLubyte) * 4) : 0;
+        size_t len_color  = x->has_color ? (sizeof(GLubyte) * 4) : 0;
         size_t len_normal = x->has_normal ? (sizeof(GLbyte) * 3) : 0;
 
-        switch(type) {
+        switch (type) {
             case GLX_DISPLAYLIST_NORMAL: glVertexPointer(3, GL_SHORT, 0, NULL); break;
             case GLX_DISPLAYLIST_POINTS:
             case GLX_DISPLAYLIST_ENHANCED: glVertexPointer(3, GL_FLOAT, 0, NULL); break;
         }
 
-        if(x->has_color) {
+        if (x->has_color) {
             glEnableClientState(GL_COLOR_ARRAY);
             glColorPointer(4, GL_UNSIGNED_BYTE, 0, (const void*)(x->size * len_vertex));
         }
 
-        if(x->has_normal) {
+        if (x->has_normal) {
             glEnableClientState(GL_NORMAL_ARRAY);
             glNormalPointer(GL_BYTE, 0, (const void*)(x->size * (len_vertex + len_color)));
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        if(type == GLX_DISPLAYLIST_POINTS) {
+        if (type == GLX_DISPLAYLIST_POINTS)
             glDrawArrays(GL_POINTS, 0, x->size);
-        } else {
-        glDrawArrays(GL_QUADS, 0, x->size);
-        }
+        else glDrawArrays(GL_QUADS, 0, x->size);
 
         if(x->has_normal)
             glDisableClientState(GL_NORMAL_ARRAY);

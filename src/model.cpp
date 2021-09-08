@@ -304,7 +304,7 @@ static void greedy_mesh(struct kv6_t* kv6, struct kv6_voxel* voxel, uint8_t* mar
                         break;
                 }
 
-                auto neighbour = (kv6_voxel*) bsearch(&lookup, kv6->voxels, kv6->voxel_count, sizeof(struct kv6_voxel), kv6_voxel_cmp);
+                auto neighbour = (kv6_voxel*) bsearch(&lookup, kv6->voxels, kv6->voxel_count, sizeof(kv6_voxel), kv6_voxel_cmp);
 
                 if(!neighbour || !(neighbour->visfaces & face)
                    || (neighbour->color & 0xFFFFFF) != (voxel->color & 0xFFFFFF)
