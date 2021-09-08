@@ -87,7 +87,7 @@ void drawScene() {
     if (settings.ambient_occlusion) glShadeModel(GL_SMOOTH);
     else glShadeModel(GL_FLAT);
 
-    matrix_upload();
+    matrix_upload(matrix_view, matrix_model);
     chunk_draw_visible();
 
     if (settings.smooth_fog) {
@@ -99,81 +99,77 @@ void drawScene() {
 
     glShadeModel(GL_FLAT);
     kv6_calclight(-1, -1, -1);
-    matrix_upload();
+    matrix_upload(matrix_view, matrix_model);
     particle_render();
     tracer_render();
     grenade_render();
     map_damaged_voxels_render();
-    matrix_upload();
+    matrix_upload(matrix_view, matrix_model);
 
-    if(gamestate.gamemode_type == GAMEMODE_CTF) {
-        if(!gamestate.gamemode.ctf.team_1_intel) {
+    mat4 model;
+
+    if (gamestate.gamemode_type == GAMEMODE_CTF) {
+        if (!gamestate.gamemode.ctf.team_1_intel) {
             float x = gamestate.gamemode.ctf.team_1_intel_location.dropped.x;
             float y = 63.0F - gamestate.gamemode.ctf.team_1_intel_location.dropped.z + 1.0F;
             float z = gamestate.gamemode.ctf.team_1_intel_location.dropped.y;
-            matrix_push(matrix_model);
-            matrix_translate(matrix_model, x, y, z);
+            matrix_load(model, matrix_model);
+            matrix_translate(model, x, y, z);
             kv6_calclight(x, y, z);
-            matrix_upload();
+            matrix_upload(matrix_view, model);
             kv6_render(&model_intel, TEAM_1);
-            matrix_pop(matrix_model);
         }
-        if(!gamestate.gamemode.ctf.team_2_intel) {
+
+        if (!gamestate.gamemode.ctf.team_2_intel) {
             float x = gamestate.gamemode.ctf.team_2_intel_location.dropped.x;
             float y = 63.0F - gamestate.gamemode.ctf.team_2_intel_location.dropped.z + 1.0F;
             float z = gamestate.gamemode.ctf.team_2_intel_location.dropped.y;
-            matrix_push(matrix_model);
-            matrix_translate(matrix_model, x, y, z);
+            matrix_load(model, matrix_model);
+            matrix_translate(model, x, y, z);
             kv6_calclight(x, y, z);
-            matrix_upload();
+            matrix_upload(matrix_view, model);
             kv6_render(&model_intel, TEAM_2);
-            matrix_pop(matrix_model);
         }
-        if(map_object_visible(gamestate.gamemode.ctf.team_1_base.x, 63.0F - gamestate.gamemode.ctf.team_1_base.z + 1.0F,
-                              gamestate.gamemode.ctf.team_1_base.y)) {
-            matrix_push(matrix_model);
-            matrix_translate(matrix_model, gamestate.gamemode.ctf.team_1_base.x,
+        if (map_object_visible(gamestate.gamemode.ctf.team_1_base.x, 63.0F - gamestate.gamemode.ctf.team_1_base.z + 1.0F,
+                               gamestate.gamemode.ctf.team_1_base.y)) {
+            matrix_load(model, matrix_model);
+            matrix_translate(model, gamestate.gamemode.ctf.team_1_base.x,
                              63.0F - gamestate.gamemode.ctf.team_1_base.z + 1.0F, gamestate.gamemode.ctf.team_1_base.y);
             kv6_calclight(gamestate.gamemode.ctf.team_1_base.x, 63.0F - gamestate.gamemode.ctf.team_1_base.z + 1.0F,
                           gamestate.gamemode.ctf.team_1_base.y);
-            matrix_upload();
+            matrix_upload(matrix_view, model);
             kv6_render(&model_tent, TEAM_1);
-            matrix_pop(matrix_model);
         }
-        if(map_object_visible(gamestate.gamemode.ctf.team_2_base.x, 63.0F - gamestate.gamemode.ctf.team_2_base.z + 1.0F,
-                              gamestate.gamemode.ctf.team_2_base.y)) {
-            matrix_push(matrix_model);
-            matrix_translate(matrix_model, gamestate.gamemode.ctf.team_2_base.x,
+        if (map_object_visible(gamestate.gamemode.ctf.team_2_base.x, 63.0F - gamestate.gamemode.ctf.team_2_base.z + 1.0F,
+                               gamestate.gamemode.ctf.team_2_base.y)) {
+            matrix_load(model, matrix_model);
+            matrix_translate(model, gamestate.gamemode.ctf.team_2_base.x,
                              63.0F - gamestate.gamemode.ctf.team_2_base.z + 1.0F, gamestate.gamemode.ctf.team_2_base.y);
             kv6_calclight(gamestate.gamemode.ctf.team_2_base.x, 63.0F - gamestate.gamemode.ctf.team_2_base.z + 1.0F,
                           gamestate.gamemode.ctf.team_2_base.y);
-            matrix_upload();
+            matrix_upload(matrix_view, model);
             kv6_render(&model_tent, TEAM_2);
-            matrix_pop(matrix_model);
         }
     }
-    if(gamestate.gamemode_type == GAMEMODE_TC) {
-        for(int k = 0; k < gamestate.gamemode.tc.territory_count; k++) {
-            matrix_push(matrix_model);
-            matrix_translate(matrix_model, gamestate.gamemode.tc.territory[k].x,
+
+    if (gamestate.gamemode_type == GAMEMODE_TC) {
+        for (int k = 0; k < gamestate.gamemode.tc.territory_count; k++) {
+            matrix_load(model, matrix_model);
+            matrix_translate(model, gamestate.gamemode.tc.territory[k].x,
                              63.0F - gamestate.gamemode.tc.territory[k].z + 1.0F, gamestate.gamemode.tc.territory[k].y);
             kv6_calclight(gamestate.gamemode.tc.territory[k].x, 63.0F - gamestate.gamemode.tc.territory[k].z + 1.0F,
                           gamestate.gamemode.tc.territory[k].y);
-            matrix_upload();
+            matrix_upload(matrix_view, model);
             kv6_render(&model_tent, minc(gamestate.gamemode.tc.territory[k].team, 2));
-            matrix_pop(matrix_model);
         }
     }
 }
 
 void display() {
-    if(network_map_transfer) {
-        glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-    } else {
-        glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
-    }
+    if (network_map_transfer) glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+    else glClearColor(fog_color[0], fog_color[1], fog_color[2], fog_color[3]);
 
-    if(hud_active->render_world) {
+    if (hud_active->render_world) {
         glEnable(GL_DEPTH_TEST);
         glDepthRange(0.0F, 1.0F);
 
@@ -186,12 +182,12 @@ void display() {
             matrix_perspective(matrix_projection, camera_fov_scaled(),
                                ((float)settings.window_width) / ((float)settings.window_height), 0.1F,
                                settings.render_distance + CHUNK_SIZE * 4.0F);
-            matrix_upload_p();
+            matrix_upload_p(matrix_projection);
 
             matrix_identity(matrix_view);
             camera_apply();
             matrix_identity(matrix_model);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
 
             float lpos[4] = {0.0F, -1.0F, 1.0F, 0.0F};
             glLightfv(GL_LIGHT0, GL_POSITION, lpos);
@@ -265,7 +261,7 @@ void display() {
             }
             if(pos != NULL && pos[1] > 1
                && (pow(pos[0] - camera_x, 2) + pow(pos[1] - camera_y, 2) + pow(pos[2] - camera_z, 2)) < 5 * 5) {
-                matrix_upload();
+                matrix_upload(matrix_view, matrix_model);
                 glColor3f(1.0F, 0.0F, 0.0F);
                 glLineWidth(1.0F);
                 glDisable(GL_DEPTH_TEST);
@@ -342,13 +338,13 @@ void display() {
                 players[local_player_id].physics.eye.y = tmp2;
             }
 
-            matrix_upload_p();
-            matrix_upload();
+            matrix_upload_p(matrix_projection);
+            matrix_upload(matrix_view, matrix_model);
             player_render_all();
 
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             map_collapsing_render();
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
 
             if(!map_isair(camera_x, camera_y, camera_z))
                 glClear(GL_COLOR_BUFFER_BIT);
@@ -368,8 +364,8 @@ void display() {
     matrix_ortho(matrix_projection, 0.0F, settings.window_width, 0.0F, settings.window_height, -1.0F, 1.0F);
     matrix_identity(matrix_view);
     matrix_identity(matrix_model);
-    matrix_upload();
-    matrix_upload_p();
+    matrix_upload(matrix_view, matrix_model);
+    matrix_upload_p(matrix_projection);
     float scalex = settings.window_width / 800.0F;
     float scalef = settings.window_height / 600.0F;
 

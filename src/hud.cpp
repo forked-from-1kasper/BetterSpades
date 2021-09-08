@@ -138,14 +138,14 @@ static void hud_ingame_render3D() {
     matrix_perspective(matrix_projection, CAMERA_DEFAULT_FOV,
                        ((float)settings.window_width) / ((float)settings.window_height), 0.1F, 128.0F);
     matrix_identity(matrix_view);
-    matrix_upload_p();
+    matrix_upload_p(matrix_projection);
 
     if(!network_map_transfer) {
         if(screen_current == SCREEN_TEAM_SELECT) {
             matrix_identity(matrix_model);
             matrix_translate(matrix_model, -1.4F, -2.0F, -3.0F);
             matrix_rotate(matrix_model, -90.0F + 22.5F, 0.0F, 1.0F, 0.0F);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             struct Player p_hud;
             memset(&p_hud, 0, sizeof(struct Player));
             p_hud.spade_use_timer = FLT_MAX;
@@ -168,7 +168,7 @@ static void hud_ingame_render3D() {
             matrix_identity(matrix_model);
             matrix_translate(matrix_model, 1.4F, -2.0F, -3.0F);
             matrix_rotate(matrix_model, -90.0F - 22.5F, 0.0F, 1.0F, 0.0F);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             p_hud.team = TEAM_2;
             player_render(&p_hud, PLAYERS_MAX);
         }
@@ -180,7 +180,7 @@ static void hud_ingame_render3D() {
             matrix_translate(matrix_model, (model_semi.xpiv - model_semi.xsiz / 2.0F) * model_semi.scale,
                              (model_semi.zpiv - model_semi.zsiz / 2.0F) * model_semi.scale,
                              (model_semi.ypiv - model_semi.ysiz / 2.0F) * model_semi.scale);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             kv6_render(&model_semi, TEAM_SPECTATOR);
 
             matrix_identity(matrix_model);
@@ -189,7 +189,7 @@ static void hud_ingame_render3D() {
             matrix_translate(matrix_model, (model_smg.xpiv - model_smg.xsiz / 2.0F) * model_smg.scale,
                              (model_smg.zpiv - model_smg.zsiz / 2.0F) * model_smg.scale,
                              (model_smg.ypiv - model_smg.ysiz / 2.0F) * model_smg.scale);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             kv6_render(&model_smg, TEAM_SPECTATOR);
 
             matrix_identity(matrix_model);
@@ -198,7 +198,7 @@ static void hud_ingame_render3D() {
             matrix_translate(matrix_model, (model_shotgun.xpiv - model_shotgun.xsiz / 2.0F) * model_shotgun.scale,
                              (model_shotgun.zpiv - model_shotgun.zsiz / 2.0F) * model_shotgun.scale,
                              (model_shotgun.ypiv - model_shotgun.ysiz / 2.0F) * model_shotgun.scale);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             kv6_render(&model_shotgun, TEAM_SPECTATOR);
         }
 
@@ -239,7 +239,7 @@ static void hud_ingame_render3D() {
             matrix_translate(matrix_model, 0.0F,
                              -(rotating_model->zsiz * 0.5F + rotating_model->zpiv) * rotating_model->scale, -10.0F);
             matrix_rotate(matrix_model, window_time() * 90.0F, 0.0F, 1.0F, 0.0F);
-            matrix_upload();
+            matrix_upload(matrix_view, matrix_model);
             glViewport(-settings.window_width * 0.4F, settings.window_height * 0.2F, settings.window_width,
                        settings.window_height);
             kv6_render(rotating_model, rotating_model_team);

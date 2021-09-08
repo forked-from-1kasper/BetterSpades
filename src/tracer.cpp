@@ -56,21 +56,20 @@ void tracer_add(int type, float x0, float y0, float z0, float dx, float dy, floa
 }
 
 static bool tracer_render_single(void* obj, void* user) {
-    struct Tracer* t = (struct Tracer*)obj;
+    auto t = (Tracer*) obj; mat4 matrix_tracer;
 
-    matrix_push(matrix_model);
-    matrix_translate(matrix_model, t->r.origin.x, t->r.origin.y, t->r.origin.z);
-    matrix_pointAt(matrix_model, t->r.direction.x, t->r.direction.y, t->r.direction.z);
-    matrix_rotate(matrix_model, 90.0F, 0.0F, 1.0F, 0.0F);
-    matrix_upload();
+    matrix_load(matrix_tracer, matrix_model);
+    matrix_translate(matrix_tracer, t->r.origin.x, t->r.origin.y, t->r.origin.z);
+    matrix_pointAt(matrix_tracer, t->r.direction.x, t->r.direction.y, t->r.direction.z);
+    matrix_rotate(matrix_tracer, 90.0F, 0.0F, 1.0F, 0.0F);
+    matrix_upload(matrix_view, matrix_tracer);
     kv6_render(
-        (struct kv6_t*[]) {
+        (kv6_t*[]) {
             &model_semi_tracer,
             &model_smg_tracer,
             &model_shotgun_tracer,
         }[t->type],
         TEAM_SPECTATOR);
-    matrix_pop(matrix_model);
 
     return false;
 }

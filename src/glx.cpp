@@ -210,10 +210,8 @@ void glx_enable_sphericalfog() {
         glEnable(GL_TEXTURE_GEN_S);
         glActiveTexture(GL_TEXTURE0);
     } else {
-        matrix_push(matrix_model);
-        matrix_identity(matrix_model);
-        matrix_upload();
-        matrix_pop(matrix_model);
+        mat4 model; matrix_identity(model);
+        matrix_upload(matrix_view, model);
 
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT1);

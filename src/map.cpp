@@ -130,7 +130,7 @@ static bool damaged_voxel_update(void* key, void* value, void* user) {
 
 void map_damaged_voxels_render() {
     matrix_identity(matrix_model);
-    matrix_upload();
+    matrix_upload(matrix_view, matrix_model);
     // glEnable(GL_POLYGON_OFFSET_FILL);
     // glPolygonOffset(0.0F,-100.0F);
     glDepthFunc(GL_EQUAL);
@@ -335,7 +335,7 @@ static bool falling_blocks_render(void* obj, void* user) {
     matrix_translate(matrix_model, collapsing->p.x, collapsing->p.y, collapsing->p.z);
     matrix_rotate(matrix_model, collapsing->o.x, 1.0F, 0.0F, 0.0F);
     matrix_rotate(matrix_model, collapsing->o.y, 0.0F, 1.0F, 0.0F);
-    matrix_upload();
+    matrix_upload(matrix_view, matrix_model);
 
     if(!collapsing->has_displaylist) {
         collapsing->has_displaylist = 1;
@@ -358,9 +358,9 @@ void map_collapsing_render() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    matrix_push(matrix_model);
+    mat4 model; matrix_load(model, matrix_model);
     entitysys_iterate(&map_collapsing_structures, NULL, falling_blocks_render);
-    matrix_pop(matrix_model);
+    matrix_load(matrix_model, model);
 
     glDisable(GL_BLEND);
 }
@@ -398,7 +398,7 @@ static bool falling_blocks_update(void* obj, void* user) {
 
     collapsing->v.y -= dt;
 
-    matrix_push(matrix_model);
+    mat4 model; matrix_load(model, matrix_model);
     matrix_identity(matrix_model);
     matrix_translate(matrix_model, collapsing->p.x, collapsing->p.y, collapsing->p.z);
     matrix_rotate(matrix_model, collapsing->o.x, 1.0F, 0.0F, 0.0F);
@@ -423,18 +423,20 @@ static bool falling_blocks_update(void* obj, void* user) {
             ht_iterate(&collapsing->voxels, collapsing, falling_blocks_particles);
             ht_destroy(&collapsing->voxels);
 
+            mat4 original; matrix_load(original, matrix_model);
+
             if(collapsing->has_displaylist) {
                 glx_displaylist_destroy(&collapsing->displaylist);
             } else {
                 tesselator_free(&collapsing->mesh_geometry);
             }
 
-            matrix_pop(matrix_model);
+            matrix_load(matrix_model, original);
             return true;
         }
     }
 
-    matrix_pop(matrix_model);
+    matrix_load(matrix_model, model);
 
     collapsing->o.x += ((collapsing->rotation & 1) ? 1.0F : -1.0F) * dt * 75.0F;
     collapsing->o.y += ((collapsing->rotation & 2) ? 1.0F : -1.0F) * dt * 75.0F;

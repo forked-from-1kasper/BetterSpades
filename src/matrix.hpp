@@ -32,13 +32,12 @@ void matrix_translate(mat4 m, float x, float y, float z);
 void matrix_scale3(mat4 m, float s);
 void matrix_scale(mat4 m, float sx, float sy, float sz);
 void matrix_identity(mat4 m);
-void matrix_push(mat4 m);
-void matrix_pop(mat4 m);
+
 void matrix_vector(mat4 m, vec4 v);
 void matrix_ortho(mat4 m, float left, float right, float bottom, float top, float nearv, float farv);
 void matrix_perspective(mat4 m, float fovy, float aspect, float zNear, float zFar);
 void matrix_lookAt(mat4 m, double eyex, double eyey, double eyez, double centerx, double centery, double centerz,
                    double upx, double upy, double upz);
-void matrix_upload(void);
-void matrix_upload_p(void);
+void matrix_upload(mat4, mat4);
+void matrix_upload_p(mat4);
 void matrix_pointAt(mat4 m, float dx, float dy, float dz);

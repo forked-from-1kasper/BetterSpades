@@ -28,11 +28,6 @@ mat4 matrix_view;
 mat4 matrix_model;
 mat4 matrix_projection;
 
-#define MATRIX_STACK_DEPTH 8
-
-mat4 matrix_stack[MATRIX_STACK_DEPTH];
-int matrix_stack_index = 0;
-
 void matrix_multiply(mat4 m, mat4 n) {
     glmc_mat4_mul(n, m, m);
 }
@@ -59,24 +54,6 @@ void matrix_scale(mat4 m, float sx, float sy, float sz) {
 
 void matrix_identity(mat4 m) {
     glmc_mat4_identity(m);
-}
-
-void matrix_push(mat4 m) {
-    if(matrix_stack_index >= MATRIX_STACK_DEPTH) {
-        log_fatal("Matrix stack overflow!");
-        return;
-    }
-
-    glmc_mat4_copy(m, matrix_stack[matrix_stack_index++]);
-}
-
-void matrix_pop(mat4 m) {
-    if(matrix_stack_index < 1) {
-        log_fatal("Matrix stack underflow!");
-        return;
-    }
-
-    glmc_mat4_copy(matrix_stack[--matrix_stack_index], m);
 }
 
 void matrix_vector(mat4 m, vec4 v) {
@@ -119,13 +96,13 @@ void matrix_lookAt(mat4 m, double eyex, double eyey, double eyez, double centerx
     glmc_lookat(eye, center, up, m);
 }
 
-void matrix_upload() {
+void matrix_upload(mat4 view, mat4 model) {
     glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf((float*)matrix_view);
-    glMultMatrixf((float*)matrix_model);
+    glLoadMatrixf((float*) view);
+    glMultMatrixf((float*) model);
 }
 
-void matrix_upload_p() {
+void matrix_upload_p(mat4 projection) {
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf((float*)matrix_projection);
+    glLoadMatrixf((float*) projection);
 }

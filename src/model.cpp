@@ -445,22 +445,20 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
         glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
         glBindTexture(GL_TEXTURE_2D, texture_dummy.texture_id);
 
-        if(kv6->colorize) {
+        if (kv6->colorize) {
             glEnable(GL_TEXTURE_2D);
             float color[] {kv6->red, kv6->green, kv6->blue, 1.0F};
             glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (float*) &color);
         }
 
-        matrix_push(matrix_model);
-        matrix_scale3(matrix_model, kv6->scale);
-        matrix_translate(matrix_model, -kv6->xpiv, -kv6->zpiv, -kv6->ypiv);
-        matrix_upload();
+        glScalef(kv6->scale, kv6->scale, kv6->scale);
+        glTranslatef(-kv6->xpiv, -kv6->zpiv, -kv6->ypiv);
 
         glx_displaylist_draw(kv6->display_list + 0, GLX_DISPLAYLIST_NORMAL);
 
         if (!kv6->colorize) glEnable(GL_TEXTURE_2D);
 
-        switch(team) {
+        switch (team) {
             case TEAM_1: {
                 float color[] {gamestate.team_1.red * 0.75F / 255.0F,
                                gamestate.team_1.green * 0.75F / 255.0F,
@@ -482,8 +480,6 @@ void kv6_render(struct kv6_t* kv6, unsigned char team) {
         }
 
         glx_displaylist_draw(kv6->display_list + 1, GLX_DISPLAYLIST_NORMAL);
-
-        matrix_pop(matrix_model);
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

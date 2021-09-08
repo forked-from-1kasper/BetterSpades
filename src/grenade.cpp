@@ -133,17 +133,16 @@ bool grenade_render_single(void* obj, void* user) {
     struct Grenade* g = (struct Grenade*)obj;
 
     // TODO: position grenade on ground properly
-    matrix_push(matrix_model);
-    matrix_translate(matrix_model, g->pos.x,
+    mat4 model; matrix_load(model, matrix_model);
+    matrix_translate(model, g->pos.x,
                      g->pos.y + (model_grenade.zpiv + model_grenade.zsiz * 2) * model_grenade.scale, g->pos.z);
     if(fabs(g->velocity.x) > 0.05F || fabs(g->velocity.y) > 0.05F || fabs(g->velocity.z) > 0.05F)
-        matrix_rotate(matrix_model, -window_time() * 720.0F, -g->velocity.z, 0.0F, g->velocity.x);
-    matrix_upload();
+        matrix_rotate(model, -window_time() * 720.0F, -g->velocity.z, 0.0F, g->velocity.x);
+    matrix_upload(matrix_view, model);
 
     kv6_calclight(g->pos.x, g->pos.y, g->pos.z);
 
     kv6_render(&model_grenade, TEAM_1);
-    matrix_pop(matrix_model);
     return false;
 }
 
